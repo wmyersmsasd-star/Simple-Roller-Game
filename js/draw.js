@@ -73,9 +73,9 @@ Draw.world = function () {
 // A solid block: white inside, black outline.
 Draw.block = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#000000";
   ctx.fillRect(x, y, size, size);
-  ctx.strokeStyle = "#000000";
+  ctx.strokeStyle = "#c20abf";
   ctx.lineWidth = CONFIG.LINE_WIDTH;
   ctx.strokeRect(x + CONFIG.LINE_WIDTH / 2,
                  y + CONFIG.LINE_WIDTH / 2,
@@ -117,8 +117,8 @@ Draw.player = function () {
   var centerY = Player.y + CONFIG.PLAYER_SIZE / 2;
 
   // the circle
-  ctx.fillStyle = "#ffffff";
-  ctx.strokeStyle = "#000000";
+  ctx.fillStyle = "#1d0f0f";
+  ctx.strokeStyle = "#1208d7";
   ctx.lineWidth = CONFIG.LINE_WIDTH;
   ctx.beginPath();
   ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
