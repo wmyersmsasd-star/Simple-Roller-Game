@@ -35,7 +35,7 @@ Draw.everything = function () {
   var ctx = Draw.ctx;
 
   // 1. wipe the screen white
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#070707";
   ctx.fillRect(0, 0, CONFIG.CANVAS_W, CONFIG.CANVAS_H);
 
   // 2. shift everything left so the camera looks like it moved right
@@ -129,7 +129,7 @@ Draw.player = function () {
   var dotX = centerX + Math.cos(Player.angle) * r * CONFIG.DOT_DISTANCE;
   var dotY = centerY + Math.sin(Player.angle) * r * CONFIG.DOT_DISTANCE;
 
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = "#0a0505";
   ctx.beginPath();
   ctx.arc(dotX, dotY, 4, 0, Math.PI * 2);
   ctx.fill();
