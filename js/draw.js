@@ -86,7 +86,7 @@ Draw.block = function (x, y, size) {
 // A spike: a solid black triangle pointing up.
 Draw.spike = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = "#850303";
   ctx.beginPath();
   ctx.moveTo(x, y + size);
   ctx.lineTo(x + size / 2, y);
@@ -98,7 +98,7 @@ Draw.spike = function (x, y, size) {
 // The finish: a black pole with a flag on it.
 Draw.finish = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = "#1111da";
   ctx.fillRect(x + size / 2 - 2, y, 4, size);
   ctx.beginPath();
   ctx.moveTo(x + size / 2 + 2, y + 4);
