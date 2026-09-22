@@ -24,16 +24,21 @@ Player.reset = function () {
   Player.vy = 0;
   Player.onGround = false;
   Player.angle = 0;
+  Dash.reset();
 };
 
 // Run one frame of player movement.
 Player.update = function () {
   var size = CONFIG.PLAYER_SIZE;
 
+  Dash.update();
+
   // --- 1. decide how fast to go sideways ------------------------------
   Player.vx = 0;
-  if (Input.left)  { Player.vx = -CONFIG.MOVE_SPEED; }
-  if (Input.right) { Player.vx =  CONFIG.MOVE_SPEED; }
+  if (!Dash.isMoving()) {
+    if (Input.left)  { Player.vx = -CONFIG.MOVE_SPEED; }
+    if (Input.right) { Player.vx =  CONFIG.MOVE_SPEED; }
+  }
 
   // --- 2. jump, but only if we are standing on something --------------
   if (Input.jump && Player.onGround) {

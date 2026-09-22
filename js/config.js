@@ -32,13 +32,13 @@ var CONFIG = {
   DOT_DISTANCE: 0.55, // how far the off-center dot sits from the middle
                       // 0 = dead center, 1 = right on the edge
 
-  // --- rules ----------------------------------------------------------
-  START_LEVEL: 0      // which level in data/levels.json to load first
-     DASH_SPEED: 8,           // pixels per frame while dashing  
-  DASH_FRAMES: 10,         // how long a dash lasts  
-  DASH_COOLDOWN_FRAMES: 120, // 120 frames = 2 seconds before you can dash again  
-  BOUNCE_FRAMES: 10,       // how long the bounce-back lasts  
-  BOUNCE_SPEED: 3,         // pixels per frame of bounce-back  
-  BOUNCE_UP: 8             // upward kick when you smash a block  
+   // --- rules ----------------------------------------------------------
+   START_LEVEL: 0,          // which level in data/levels.json to load first
+   DASH_DISTANCE: 160,      // four 40-pixel blocks
+   DASH_SPEED: 8,
+   DASH_COOLDOWN_FRAMES: 45,
+   BOUNCE_DISTANCE: 48,
+   BOUNCE_SPEED: 8,
+   BOUNCE_UP: 8
 
 };
