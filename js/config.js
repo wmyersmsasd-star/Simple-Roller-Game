@@ -34,4 +34,11 @@ var CONFIG = {
 
   // --- rules ----------------------------------------------------------
   START_LEVEL: 0      // which level in data/levels.json to load first
+     DASH_SPEED: 8,           // pixels per frame while dashing  
+  DASH_FRAMES: 10,         // how long a dash lasts  
+  DASH_COOLDOWN_FRAMES: 120, // 120 frames = 2 seconds before you can dash again  
+  BOUNCE_FRAMES: 10,       // how long the bounce-back lasts  
+  BOUNCE_SPEED: 3,         // pixels per frame of bounce-back  
+  BOUNCE_UP: 8             // upward kick when you smash a block  
+
 };
