@@ -93,6 +93,15 @@ Level.charAt = function (col, row) {
   return Level.grid[row].charAt(col);
 };
 
+Level.setTile = function (col, row, character) {
+  if (row < 0 || row >= CONFIG.ROWS) { return; }
+  if (col < 0 || col >= Level.cols) { return; }
+  if (character === "S") { return; }
+
+  var line = Level.grid[row];
+  Level.grid[row] = line.substring(0, col) + character + line.substring(col + 1);
+};
+
 Level.isSolid  = function (col, row) { return Level.charAt(col, row) === "#"; };
 Level.isSpike  = function (col, row) { return Level.charAt(col, row) === "^"; };
 Level.isFinish = function (col, row) { return Level.charAt(col, row) === "F"; };

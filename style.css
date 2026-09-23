@@ -30,6 +30,41 @@ canvas {
   margin-top: 16px;
 }
 
+.stage-tools {
+  margin: 14px auto 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+#stage-creator-toggle,
+.creator-brush {
+  font: inherit;
+  background: #f2f2f2;
+  border: 2px solid #7a0899;
+  color: #1d1d1d;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+#stage-creator-toggle:hover,
+.creator-brush:hover {
+  background: #e9d7f3;
+}
+
+.creator-brushes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.creator-brush.active {
+  background: #7a0899;
+  color: white;
+}
+
 .controls {
   font-size: 13px;
 }

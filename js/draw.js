@@ -44,9 +44,47 @@ Draw.everything = function () {
 
   Draw.world();
   Draw.dashParticles();
+  Draw.creatorPreview();
   Draw.player();
 
   ctx.restore();
+};
+
+Draw.creatorPreview = function () {
+  if (!Game.creatorEnabled || !Game.creatorHover) { return; }
+
+  var ctx = Draw.ctx;
+  var x = Game.creatorHover.col * CONFIG.TILE;
+  var y = Game.creatorHover.row * CONFIG.TILE;
+  var hoverChar = Game.creatorBrush;
+
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x + 1, y + 1, CONFIG.TILE - 2, CONFIG.TILE - 2);
+
+  if (hoverChar === "#") {
+    ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+    ctx.fillRect(x, y, CONFIG.TILE, CONFIG.TILE);
+  }
+  if (hoverChar === "^") {
+    ctx.fillStyle = "rgba(255, 0, 0, 0.25)";
+    ctx.beginPath();
+    ctx.moveTo(x, y + CONFIG.TILE);
+    ctx.lineTo(x + CONFIG.TILE / 2, y);
+    ctx.lineTo(x + CONFIG.TILE, y + CONFIG.TILE);
+    ctx.closePath();
+    ctx.fill();
+  }
+  if (hoverChar === "F") {
+    ctx.fillStyle = "rgba(17, 17, 218, 0.25)";
+    ctx.fillRect(x + CONFIG.TILE / 2 - 2, y, 4, CONFIG.TILE);
+    ctx.beginPath();
+    ctx.moveTo(x + CONFIG.TILE / 2 + 2, y + 4);
+    ctx.lineTo(x + CONFIG.TILE - 4, y + 12);
+    ctx.lineTo(x + CONFIG.TILE / 2 + 2, y + 20);
+    ctx.closePath();
+    ctx.fill();
+  }
 };
 
 Draw.dashParticles = function () {
