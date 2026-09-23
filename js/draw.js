@@ -43,9 +43,24 @@ Draw.everything = function () {
   ctx.translate(-Draw.cameraX, 0);
 
   Draw.world();
+  Draw.dashParticles();
   Draw.player();
 
   ctx.restore();
+};
+
+Draw.dashParticles = function () {
+  var ctx = Draw.ctx;
+
+  for (var i = 0; i < Dash.trail.length; i++) {
+    var particle = Dash.trail[i];
+    var alpha = particle.life / particle.maxLife;
+
+    ctx.fillStyle = "rgba(18, 8, 215, " + alpha + ")";
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.radius * alpha, 0, Math.PI * 2);
+    ctx.fill();
+  }
 };
 
 // Draw every grid square that is currently on screen.
