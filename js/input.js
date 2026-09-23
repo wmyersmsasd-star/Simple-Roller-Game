@@ -11,14 +11,15 @@ var Input = {
   right: false,
   jump: false,
   dash: false,
-  restart: false
+  restart: false,
+  creatorToggle: false
 };
 
 // Called whenever a key goes DOWN.
 window.addEventListener("keydown", function (event) {
   setKey(event.key, true);
   // stop the arrow keys and space from scrolling the page
-  if (["ArrowLeft", "ArrowRight", "ArrowUp", " ", "x", "X"].indexOf(event.key) >= 0) {
+  if (["ArrowLeft", "ArrowRight", "ArrowUp", " ", "x", "X", "k", "K"].indexOf(event.key) >= 0) {
     event.preventDefault();
   }
 });
@@ -36,4 +37,5 @@ function setKey(key, isDown) {
   if (key === "ArrowUp"    || key === " " || key === "w" || key === "W") { Input.jump = isDown; }
   if (key === "x" || key === "X") { Input.dash = isDown; }
   if (key === "r" || key === "R") { Input.restart = isDown; }
+  if (key === "k" || key === "K") { Input.creatorToggle = isDown; }
 }

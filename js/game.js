@@ -25,8 +25,6 @@ Game.startLevel = function (levelNumber) {
   Game.creatorEnabled = false;
   Game.creatorHover = null;
   Game.showMessage("");
-  var toggle = document.getElementById("stage-creator-toggle");
-  if (toggle) { toggle.textContent = "Stage Creator"; }
 };
 
 Game.showMessage = function (text) {
@@ -34,21 +32,7 @@ Game.showMessage = function (text) {
 };
 
 Game.bindCreatorUI = function () {
-  var toggleButton = document.getElementById("stage-creator-toggle");
   var brushButtons = document.querySelectorAll(".creator-brush");
-
-  if (toggleButton) {
-    toggleButton.addEventListener("click", function () {
-      Game.creatorEnabled = !Game.creatorEnabled;
-      toggleButton.textContent = Game.creatorEnabled ? "Exit Creator" : "Stage Creator";
-
-      if (Game.creatorEnabled) {
-        Game.showMessage("Creator mode: click to paint. Use the buttons to choose a tile.");
-      } else {
-        Game.showMessage("");
-      }
-    });
-  }
 
   brushButtons.forEach(function (button) {
     button.addEventListener("click", function () {
@@ -97,6 +81,15 @@ Game.bindCreatorUI = function () {
 
 // --- ONE FRAME --------------------------------------------------------
 Game.update = function () {
+
+  if (Input.creatorToggle && !Game.creatorEnabled) {
+    Game.creatorEnabled = true;
+    Game.showMessage("Creator mode: click to paint. Press K to exit.");
+  } else if (!Input.creatorToggle && Game.creatorEnabled) {
+    Game.creatorEnabled = false;
+    Game.showMessage("");
+    Game.creatorHover = null;
+  }
 
   // R always restarts, no matter what mode we are in.
   if (Input.restart) {
