@@ -21,6 +21,7 @@ Enemies.loadFromLevel = function () {
         dir: 1,
         cooldown: 40,
         attackTimer: 0,
+        health: CONFIG.ENEMY_MAX_HEALTH,
         minX: col * CONFIG.TILE + 8,
         maxX: (col + 1) * CONFIG.TILE - 8,
         baseY: row * CONFIG.TILE + CONFIG.TILE / 2
@@ -54,6 +55,10 @@ Enemies.update = function () {
     var dx = Player.x - enemy.x;
     var dy = Player.y - enemy.y;
 
+    if (enemy.health <= 0) {
+      continue;
+    }
+
     if (enemy.type === "ranged") {
       enemy.cooldown = enemy.cooldown - 1;
       if (Math.abs(dx) < 260 && Math.abs(dy) < 80 && enemy.cooldown <= 0) {
@@ -67,7 +72,8 @@ Enemies.update = function () {
           vx: shotDx * projectileSpeed,
           vy: shotDy * projectileSpeed,
           radius: 5,
-          life: 90
+          life: 90,
+          damage: 10
         });
       }
       continue;
@@ -84,7 +90,9 @@ Enemies.update = function () {
       }
     }
 
-    enemy.x = enemy.x + enemy.dir * 0.7;
+    if (Math.abs(dx) > 8) {
+      enemy.x = enemy.x + enemy.dir * 0.7;
+    }
     if (enemy.x < enemy.minX) {
       enemy.x = enemy.minX;
       enemy.dir = 1;
@@ -94,9 +102,21 @@ Enemies.update = function () {
       enemy.dir = -1;
     }
   }
+
+  Enemies.projectiles = Enemies.projectiles.filter(function (shot) {
+    if (shot.x < -50 || shot.x > Level.pixelWidth() + 50 || shot.y < -50 || shot.y > CONFIG.CANVAS_H + 50) {
+      return false;
+    }
+    return true;
+  });
+
+  Enemies.applyPlayerDamage();
+  Enemies.list = Enemies.list.filter(function (enemy) {
+    return enemy.health > 0;
+  });
 };
 
-Enemies.hitsPlayer = function () {
+Enemies.applyPlayerDamage = function () {
   var playerLeft = Player.x;
   var playerTop = Player.y;
   var playerRight = Player.x + CONFIG.PLAYER_SIZE;
@@ -111,7 +131,9 @@ Enemies.hitsPlayer = function () {
 
     if (shotRight > playerLeft && shotLeft < playerRight &&
         shotBottom > playerTop && shotTop < playerBottom) {
-      return true;
+      Player.takeDamage(shot.damage || 10);
+      Enemies.projectiles.splice(i, 1);
+      i = i - 1;
     }
   }
 
@@ -119,18 +141,41 @@ Enemies.hitsPlayer = function () {
     var enemy = Enemies.list[j];
     if (enemy.type !== "melee") { continue; }
 
-    var attackReach = enemy.attackTimer > 0 ? 26 : 0;
     var enemyLeft = enemy.x - 16;
     var enemyRight = enemy.x + 16;
     var enemyTop = enemy.y - 16;
     var enemyBottom = enemy.y + 16;
 
-    if (attackReach > 0 && enemyRight + attackReach > playerLeft && enemyLeft - attackReach < playerRight &&
+    if (enemy.attackTimer > 0 && enemyRight > playerLeft && enemyLeft < playerRight &&
         enemyBottom > playerTop && enemyTop < playerBottom) {
-      return true;
+      Player.takeDamage(20);
+      enemy.attackTimer = 0;
+      enemy.cooldown = 30;
     }
   }
+};
 
+Enemies.damageFromDash = function () {
+  for (var i = 0; i < Enemies.list.length; i++) {
+    var enemy = Enemies.list[i];
+    if (enemy.health <= 0) { continue; }
+
+    var enemyLeft = enemy.x - 16;
+    var enemyRight = enemy.x + 16;
+    var enemyTop = enemy.y - 16;
+    var enemyBottom = enemy.y + 16;
+
+    if (Player.x + CONFIG.PLAYER_SIZE > enemyLeft && Player.x < enemyRight &&
+        Player.y + CONFIG.PLAYER_SIZE > enemyTop && Player.y < enemyBottom) {
+      enemy.health = enemy.health - 15;
+      if (enemy.health <= 0) {
+        enemy.health = 0;
+      }
+    }
+  }
+};
+
+Enemies.hitsPlayer = function () {
   return false;
 };
 

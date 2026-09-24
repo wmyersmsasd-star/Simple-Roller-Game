@@ -26,6 +26,8 @@ var CONFIG = {
   // --- the player's size ----------------------------------------------
   PLAYER_SIZE: 32,    // the player collides as a 32x32 box
   PLAYER_RADIUS: 16,  // ...but is DRAWN as a circle this big
+  PLAYER_MAX_HEALTH: 100,
+  ENEMY_MAX_HEALTH: 100,
 
   // --- drawing --------------------------------------------------------
   LINE_WIDTH: 3,      // thickness of every black outline

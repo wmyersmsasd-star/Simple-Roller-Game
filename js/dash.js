@@ -16,6 +16,10 @@ Dash.reset = function () {
   Dash.trail = [];
 };
 
+Dash.canDash = function () {
+  return Dash.state === "ready" && Dash.cooldown <= 0 && (Input.left || Input.right);
+};
+
 Dash.spawnTrail = function () {
   var size = CONFIG.PLAYER_SIZE;
   var centerX = Player.x + size / 2;
@@ -66,7 +70,12 @@ Dash.update = function () {
   Dash.dashWasDown = Input.dash;
   Dash.updateTrail();
 
-  if (Dash.state === "ready" && justPressed && (Input.left || Input.right)) {
+  if (Dash.state === "cooldown") {
+    Dash.cooldown = Dash.cooldown - 1;
+    if (Dash.cooldown <= 0) { Dash.state = "ready"; }
+  }
+
+  if (Dash.state === "ready" && justPressed && Dash.canDash()) {
     if (Input.left) { Dash.direction = -1; }
     if (Input.right) { Dash.direction = 1; }
     Dash.distanceLeft = CONFIG.DASH_DISTANCE;
@@ -76,24 +85,21 @@ Dash.update = function () {
   if (Dash.state === "dashing") {
     for (var i = 0; i < 4; i++) { Dash.spawnTrail(); }
     var hit = Dash.move(Dash.direction * Dash.distanceLeft);
+    Enemies.damageFromDash();
     Dash.distanceLeft = 0;
+    Dash.state = "cooldown";
+    Dash.cooldown = 30;
     if (hit) {
       Dash.state = "cooldown";
-      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
-    } else {
-      Dash.state = "cooldown";
-      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
+      Dash.cooldown = 30;
     }
   } else if (Dash.state === "bouncing") {
     Dash.move(-Dash.direction * Math.min(CONFIG.BOUNCE_SPEED, Dash.distanceLeft));
     Dash.distanceLeft = Dash.distanceLeft - CONFIG.BOUNCE_SPEED;
     if (Dash.distanceLeft <= 0) {
       Dash.state = "cooldown";
-      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
+      Dash.cooldown = 30;
     }
-  } else if (Dash.state === "cooldown") {
-    Dash.cooldown = Dash.cooldown - 1;
-    if (Dash.cooldown <= 0) { Dash.state = "ready"; }
   }
 };
 

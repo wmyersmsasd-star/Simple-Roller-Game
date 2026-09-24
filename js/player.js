@@ -13,7 +13,22 @@ var Player = {
   vx: 0,           // speed left and right
   vy: 0,           // speed up and down
   onGround: false, // is the player standing on something right now?
-  angle: 0         // how far the circle has rolled, for drawing the dot
+  angle: 0,        // how far the circle has rolled, for drawing the dot
+  health: 100      // current health; no regeneration
+};
+
+Player.takeDamage = function (amount) {
+  Player.health = Math.max(0, Player.health - amount);
+  if (Player.health <= 0) {
+    Player.health = 0;
+  }
+};
+
+Player.updateHud = function () {
+  var hud = document.getElementById("hud");
+  if (hud) {
+    hud.textContent = "Health: " + Player.health + " / " + CONFIG.PLAYER_MAX_HEALTH;
+  }
 };
 
 // Put the player back at the level's S square.
@@ -24,6 +39,8 @@ Player.reset = function () {
   Player.vy = 0;
   Player.onGround = false;
   Player.angle = 0;
+  Player.health = CONFIG.PLAYER_MAX_HEALTH;
+  Player.updateHud();
   Dash.reset();
 };
 

@@ -108,6 +108,7 @@ Game.update = function () {
 
   Player.update();
   Enemies.update();
+  Player.updateHud();
 
   if (Player.isDead()) {
     Game.mode = "dead";

@@ -31,6 +31,15 @@ canvas {
   margin-top: 16px;
 }
 
+#hud {
+  font-size: 16px;
+  font-weight: bold;
+  color: #eafcff;
+  margin: 8px 0 0;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .stage-tools {
   margin: 14px auto 10px;
   width: min(540px, calc(100% - 20px));
