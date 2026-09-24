@@ -38,7 +38,7 @@ var CONFIG = {
    START_LEVEL: 0,          // which level in data/levels.json to load first
    DASH_DISTANCE: 160,      // four 40-pixel blocks
    DASH_SPEED: 8,
-   DASH_COOLDOWN_FRAMES: 45,
+   DASH_COOLDOWN_FRAMES: 30,
    BOUNCE_DISTANCE: 48,
    BOUNCE_SPEED: 8,
    BOUNCE_UP: 8
