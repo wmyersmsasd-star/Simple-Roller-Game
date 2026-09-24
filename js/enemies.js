@@ -65,7 +65,7 @@ Enemies.update = function () {
         Enemies.followPlayer(enemy, dx);
       }
       if (Math.abs(dx) < 260 && Math.abs(dy) < 80 && enemy.cooldown <= 0) {
-        enemy.cooldown = 90;
+        enemy.cooldown = CONFIG.RANGED_ATTACK_COOLDOWN;
         var projectileSpeed = 4;
         var shotDx = Math.abs(dx) > 0 ? dx / Math.abs(dx) : 1;
         var shotDy = dy / Math.max(Math.abs(dx), 1);
@@ -90,7 +90,7 @@ Enemies.update = function () {
     if (Math.abs(dx) < 72 && Math.abs(dy) < 28) {
       enemy.dir = dx >= 0 ? 1 : -1;
       if (enemy.cooldown <= 0) {
-        enemy.cooldown = 45;
+        enemy.cooldown = CONFIG.MELEE_ATTACK_COOLDOWN;
         enemy.attackTimer = 12;
       }
     }
@@ -114,7 +114,7 @@ Enemies.followPlayer = function (enemy, dx) {
   if (Math.abs(dx) <= 8) { return; }
 
   enemy.dir = dx > 0 ? 1 : -1;
-  var nextX = enemy.x + enemy.dir * 0.7;
+  var nextX = enemy.x + enemy.dir * CONFIG.ENEMY_MOVE_SPEED;
   var enemySize = 24;
   var enemyLeft = nextX - enemySize / 2;
   var enemyTop = enemy.y - enemySize / 2;

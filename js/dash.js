@@ -104,17 +104,17 @@ Dash.update = function () {
     Enemies.damageFromDash();
     Dash.distanceLeft = 0;
     Dash.state = "cooldown";
-    Dash.cooldown = 30;
+    Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
     if (hit) {
       Dash.state = "cooldown";
-      Dash.cooldown = 30;
+      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
     }
   } else if (Dash.state === "bouncing") {
     Dash.move(-Dash.direction * Math.min(CONFIG.BOUNCE_SPEED, Dash.distanceLeft));
     Dash.distanceLeft = Dash.distanceLeft - CONFIG.BOUNCE_SPEED;
     if (Dash.distanceLeft <= 0) {
       Dash.state = "cooldown";
-      Dash.cooldown = 30;
+      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
     }
   }
 };

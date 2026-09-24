@@ -18,10 +18,10 @@ var CONFIG = {
   CANVAS_H: 400,
 
   // --- how the player moves -------------------------------------------
-  MOVE_SPEED: 4,      // pixels per frame left and right
-  JUMP_POWER: 15,     // how hard the jump pushes UP. bigger = higher
-  GRAVITY: 0.8,       // how hard the world pulls DOWN. bigger = heavier
-  MAX_FALL: 16,       // fastest the player is allowed to fall
+   MOVE_SPEED: 5,      // pixels per frame left and right
+   JUMP_POWER: 16,     // how hard the jump pushes UP. bigger = higher
+   GRAVITY: 0.9,       // how hard the world pulls DOWN. bigger = heavier
+   MAX_FALL: 18,       // fastest the player is allowed to fall
 
   // --- the player's size ----------------------------------------------
   PLAYER_SIZE: 32,    // the player collides as a 32x32 box
@@ -38,7 +38,10 @@ var CONFIG = {
    START_LEVEL: 0,          // which level in data/levels.json to load first
    DASH_DISTANCE: 160,      // four 40-pixel blocks
    DASH_SPEED: 8,
-   DASH_COOLDOWN_FRAMES: 30,
+   DASH_COOLDOWN_FRAMES: 20,
+   ENEMY_MOVE_SPEED: 1.1,
+   RANGED_ATTACK_COOLDOWN: 65,
+   MELEE_ATTACK_COOLDOWN: 30,
    BOUNCE_DISTANCE: 48,
    BOUNCE_SPEED: 8,
    BOUNCE_UP: 8
