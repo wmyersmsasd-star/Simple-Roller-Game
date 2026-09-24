@@ -74,6 +74,7 @@ Dash.move = function (distance) {
 };
 
 Dash.update = function () {
+  Player.invulnerable = false;
   var justPressed = Input.dash && !Dash.dashWasDown;
   Dash.dashWasDown = Input.dash;
   Dash.updateTrail();
@@ -91,6 +92,7 @@ Dash.update = function () {
   }
 
   if (Dash.state === "dashing") {
+    Player.invulnerable = true;
     var dashStartX = Player.x;
     var hit = Dash.move(Dash.direction * Dash.distanceLeft);
     var dashEndX = Player.x;
@@ -101,7 +103,7 @@ Dash.update = function () {
       life: 18,
       maxLife: 18
     };
-    Enemies.damageFromDash();
+    Enemies.damageFromDash(dashStartX, dashEndX);
     Dash.distanceLeft = 0;
     Dash.state = "cooldown";
     Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;

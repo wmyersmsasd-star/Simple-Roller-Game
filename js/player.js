@@ -14,10 +14,13 @@ var Player = {
   vy: 0,           // speed up and down
   onGround: false, // is the player standing on something right now?
   angle: 0,        // how far the circle has rolled, for drawing the dot
-  health: 100      // current health; no regeneration
+  health: 100,     // current health; no regeneration
+  invulnerable: false
 };
 
 Player.takeDamage = function (amount) {
+  if (Player.invulnerable) { return; }
+
   Player.health = Math.max(0, Player.health - amount);
   if (Player.health <= 0) {
     Player.health = 0;
@@ -44,6 +47,7 @@ Player.reset = function () {
   Player.onGround = false;
   Player.angle = 0;
   Player.health = CONFIG.PLAYER_MAX_HEALTH;
+  Player.invulnerable = false;
   Player.updateHud();
   Dash.reset();
 };
