@@ -96,19 +96,16 @@ Draw.creatorPreview = function () {
 
 Draw.dashParticles = function () {
   var ctx = Draw.ctx;
-  var halfHeight = CONFIG.PLAYER_SIZE / 2;
+  if (!Dash.line) { return; }
 
-  for (var i = 0; i < Dash.trail.length; i++) {
-    var particle = Dash.trail[i];
-    var alpha = particle.life / particle.maxLife;
-
-    ctx.strokeStyle = "rgba(94, 225, 255, " + alpha + ")";
-    ctx.lineWidth = Math.max(2, particle.radius * alpha);
-    ctx.beginPath();
-    ctx.moveTo(particle.x, particle.y - halfHeight);
-    ctx.lineTo(particle.x, particle.y + halfHeight);
-    ctx.stroke();
-  }
+  var alpha = Dash.line.life / Dash.line.maxLife;
+  ctx.strokeStyle = "rgba(94, 225, 255, " + alpha + ")";
+  ctx.lineWidth = 6;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(Dash.line.startX, Dash.line.y);
+  ctx.lineTo(Dash.line.endX, Dash.line.y);
+  ctx.stroke();
 };
 
 // Draw every grid square that is currently on screen.

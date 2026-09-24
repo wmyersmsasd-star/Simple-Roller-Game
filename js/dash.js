@@ -4,7 +4,8 @@ var Dash = {
   distanceLeft: 0,
   dashWasDown: false,
   cooldown: 0,
-  trail: []
+  trail: [],
+  line: null
 };
 
 Dash.reset = function () {
@@ -14,6 +15,7 @@ Dash.reset = function () {
   Dash.dashWasDown = false;
   Dash.cooldown = 0;
   Dash.trail = [];
+  Dash.line = null;
 };
 
 Dash.canDash = function () {
@@ -50,6 +52,11 @@ Dash.updateTrail = function () {
   Dash.trail = Dash.trail.filter(function (particle) {
     return particle.life > 0;
   });
+
+  if (Dash.line) {
+    Dash.line.life = Dash.line.life - 1;
+    if (Dash.line.life <= 0) { Dash.line = null; }
+  }
 };
 
 Dash.move = function (distance) {
@@ -87,17 +94,13 @@ Dash.update = function () {
     var dashStartX = Player.x;
     var hit = Dash.move(Dash.direction * Dash.distanceLeft);
     var dashEndX = Player.x;
-    var trailStep = CONFIG.PLAYER_SIZE / 2;
-    for (var trailX = dashStartX; ; trailX = trailX + Dash.direction * trailStep) {
-      Dash.spawnTrail(trailX, Player.y);
-      if (trailX === dashEndX) {
-        break;
-      }
-      if ((Dash.direction > 0 && trailX + trailStep > dashEndX) ||
-          (Dash.direction < 0 && trailX - trailStep < dashEndX)) {
-        trailX = dashEndX - Dash.direction * trailStep;
-      }
-    }
+    Dash.line = {
+      startX: dashStartX + CONFIG.PLAYER_SIZE / 2,
+      endX: dashEndX + CONFIG.PLAYER_SIZE / 2,
+      y: Player.y + CONFIG.PLAYER_SIZE / 2,
+      life: 18,
+      maxLife: 18
+    };
     Enemies.damageFromDash();
     Dash.distanceLeft = 0;
     Dash.state = "cooldown";
