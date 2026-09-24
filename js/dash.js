@@ -74,13 +74,13 @@ Dash.update = function () {
   }
 
   if (Dash.state === "dashing") {
-    Dash.spawnTrail();
-    var hit = Dash.move(Dash.direction * Math.min(CONFIG.DASH_SPEED, Dash.distanceLeft));
-    Dash.distanceLeft = Dash.distanceLeft - CONFIG.DASH_SPEED;
+    for (var i = 0; i < 4; i++) { Dash.spawnTrail(); }
+    var hit = Dash.move(Dash.direction * Dash.distanceLeft);
+    Dash.distanceLeft = 0;
     if (hit) {
       Dash.state = "cooldown";
       Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
-    } else if (Dash.distanceLeft <= 0) {
+    } else {
       Dash.state = "cooldown";
       Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
     }

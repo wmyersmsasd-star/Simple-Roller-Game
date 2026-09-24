@@ -34,8 +34,8 @@ Draw.updateCamera = function () {
 Draw.everything = function () {
   var ctx = Draw.ctx;
 
-  // 1. wipe the screen white
-  ctx.fillStyle = "#070707";
+  // 1. wipe the screen with a darker, richer backdrop
+  ctx.fillStyle = "#090d18";
   ctx.fillRect(0, 0, CONFIG.CANVAS_W, CONFIG.CANVAS_H);
 
   // 2. shift everything left so the camera looks like it moved right
@@ -58,16 +58,16 @@ Draw.creatorPreview = function () {
   var y = Game.creatorHover.row * CONFIG.TILE;
   var hoverChar = Game.creatorBrush;
 
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.strokeStyle = "rgba(122, 240, 255, 0.9)";
   ctx.lineWidth = 2;
   ctx.strokeRect(x + 1, y + 1, CONFIG.TILE - 2, CONFIG.TILE - 2);
 
   if (hoverChar === "#") {
-    ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+    ctx.fillStyle = "rgba(122, 240, 255, 0.28)";
     ctx.fillRect(x, y, CONFIG.TILE, CONFIG.TILE);
   }
   if (hoverChar === "^") {
-    ctx.fillStyle = "rgba(255, 0, 0, 0.25)";
+    ctx.fillStyle = "rgba(255, 106, 72, 0.28)";
     ctx.beginPath();
     ctx.moveTo(x, y + CONFIG.TILE);
     ctx.lineTo(x + CONFIG.TILE / 2, y);
@@ -76,7 +76,7 @@ Draw.creatorPreview = function () {
     ctx.fill();
   }
   if (hoverChar === "F") {
-    ctx.fillStyle = "rgba(17, 17, 218, 0.25)";
+    ctx.fillStyle = "rgba(74, 241, 255, 0.28)";
     ctx.fillRect(x + CONFIG.TILE / 2 - 2, y, 4, CONFIG.TILE);
     ctx.beginPath();
     ctx.moveTo(x + CONFIG.TILE / 2 + 2, y + 4);
@@ -94,7 +94,7 @@ Draw.dashParticles = function () {
     var particle = Dash.trail[i];
     var alpha = particle.life / particle.maxLife;
 
-    ctx.fillStyle = "rgba(18, 8, 215, " + alpha + ")";
+    ctx.fillStyle = "rgba(94, 225, 255, " + alpha + ")";
     ctx.beginPath();
     ctx.arc(particle.x, particle.y, particle.radius * alpha, 0, Math.PI * 2);
     ctx.fill();
@@ -126,9 +126,9 @@ Draw.world = function () {
 // A solid block: white inside, black outline.
 Draw.block = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = "#0b1220";
   ctx.fillRect(x, y, size, size);
-  ctx.strokeStyle = "#c20abf";
+  ctx.strokeStyle = "#ff4fd8";
   ctx.lineWidth = CONFIG.LINE_WIDTH;
   ctx.strokeRect(x + CONFIG.LINE_WIDTH / 2,
                  y + CONFIG.LINE_WIDTH / 2,
@@ -139,7 +139,7 @@ Draw.block = function (x, y, size) {
 // A spike: a solid black triangle pointing up.
 Draw.spike = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#850303";
+  ctx.fillStyle = "#ff5a36";
   ctx.beginPath();
   ctx.moveTo(x, y + size);
   ctx.lineTo(x + size / 2, y);
@@ -151,7 +151,7 @@ Draw.spike = function (x, y, size) {
 // The finish: a black pole with a flag on it.
 Draw.finish = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#1111da";
+  ctx.fillStyle = "#4ae6ff";
   ctx.fillRect(x + size / 2 - 2, y, 4, size);
   ctx.beginPath();
   ctx.moveTo(x + size / 2 + 2, y + 4);
@@ -170,8 +170,8 @@ Draw.player = function () {
   var centerY = Player.y + CONFIG.PLAYER_SIZE / 2;
 
   // the circle
-  ctx.fillStyle = "#1d0f0f";
-  ctx.strokeStyle = "#1208d7";
+  ctx.fillStyle = "#24163d";
+  ctx.strokeStyle = "#7af0ff";
   ctx.lineWidth = CONFIG.LINE_WIDTH;
   ctx.beginPath();
   ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
@@ -182,7 +182,7 @@ Draw.player = function () {
   var dotX = centerX + Math.cos(Player.angle) * r * CONFIG.DOT_DISTANCE;
   var dotY = centerY + Math.sin(Player.angle) * r * CONFIG.DOT_DISTANCE;
 
-  ctx.fillStyle = "#0a0505";
+  ctx.fillStyle = "#f2fbff";
   ctx.beginPath();
   ctx.arc(dotX, dotY, 4, 0, Math.PI * 2);
   ctx.fill();
