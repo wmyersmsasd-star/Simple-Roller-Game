@@ -22,6 +22,7 @@ Player.takeDamage = function (amount) {
   if (Player.health <= 0) {
     Player.health = 0;
   }
+  Player.updateHud();
 };
 
 Player.updateHud = function () {
@@ -101,6 +102,7 @@ Player.update = function () {
 // Did the player just touch something deadly?
 Player.isDead = function () {
   var size = CONFIG.PLAYER_SIZE;
+  if (Player.health <= 0) { return true; }
   if (Collide.hitsSpike(Player.x, Player.y, size, size)) { return true; }
   if (Enemies.hitsPlayer()) { return true; }
   if (Player.y > CONFIG.CANVAS_H + 200) { return true; }   // fell off the world
