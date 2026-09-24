@@ -96,15 +96,18 @@ Draw.creatorPreview = function () {
 
 Draw.dashParticles = function () {
   var ctx = Draw.ctx;
+  var halfHeight = CONFIG.PLAYER_SIZE / 2;
 
   for (var i = 0; i < Dash.trail.length; i++) {
     var particle = Dash.trail[i];
     var alpha = particle.life / particle.maxLife;
 
-    ctx.fillStyle = "rgba(94, 225, 255, " + alpha + ")";
+    ctx.strokeStyle = "rgba(94, 225, 255, " + alpha + ")";
+    ctx.lineWidth = Math.max(2, particle.radius * alpha);
     ctx.beginPath();
-    ctx.arc(particle.x, particle.y, particle.radius * alpha, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.moveTo(particle.x, particle.y - halfHeight);
+    ctx.lineTo(particle.x, particle.y + halfHeight);
+    ctx.stroke();
   }
 };
 
