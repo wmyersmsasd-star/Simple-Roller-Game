@@ -86,6 +86,12 @@ Draw.creatorPreview = function () {
     ctx.closePath();
     ctx.fill();
   }
+  if (hoverChar === "R" || hoverChar === "M") {
+    ctx.fillStyle = hoverChar === "R" ? "rgba(100, 215, 255, 0.28)" : "rgba(255, 123, 84, 0.28)";
+    ctx.fillRect(x + 4, y + 4, CONFIG.TILE - 8, CONFIG.TILE - 8);
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.strokeRect(x + 5, y + 5, CONFIG.TILE - 10, CONFIG.TILE - 10);
+  }
 };
 
 Draw.dashParticles = function () {

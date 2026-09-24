@@ -9,9 +9,9 @@
         "flat",
         "gap",
         "flat",
-        "spikes",
-        "platform",
-        "stairs",
+        "ranged",
+        "flat",
+        "melee",
         "finish"
       ]
     },
