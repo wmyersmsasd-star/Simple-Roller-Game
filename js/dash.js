@@ -20,16 +20,17 @@ Dash.canDash = function () {
   return Dash.state === "ready" && Dash.cooldown <= 0 && (Input.left || Input.right);
 };
 
-Dash.spawnTrail = function () {
+Dash.spawnTrail = function (trailX, trailY) {
   var size = CONFIG.PLAYER_SIZE;
-  var centerX = Player.x + size / 2;
-  var centerY = Player.y + size / 2;
+  var centerX = trailX === undefined ? Player.x + size / 2 : trailX + size / 2;
+  var centerY = trailY === undefined ? Player.y + size / 2 : trailY + size / 2;
+  var isPlacedTrail = trailX !== undefined;
 
   Dash.trail.push({
-    x: centerX + (Math.random() - 0.5) * 12,
-    y: centerY + (Math.random() - 0.5) * 12,
-    vx: -Dash.direction * (2 + Math.random() * 3),
-    vy: (Math.random() - 0.5) * 2,
+    x: isPlacedTrail ? centerX : centerX + (Math.random() - 0.5) * 12,
+    y: isPlacedTrail ? centerY : centerY + (Math.random() - 0.5) * 12,
+    vx: isPlacedTrail ? 0 : -Dash.direction * (2 + Math.random() * 3),
+    vy: isPlacedTrail ? 0 : (Math.random() - 0.5) * 2,
     radius: 4 + Math.random() * 7,
     life: 10 + Math.random() * 12,
     maxLife: 10 + Math.random() * 12
@@ -83,8 +84,20 @@ Dash.update = function () {
   }
 
   if (Dash.state === "dashing") {
-    for (var i = 0; i < 4; i++) { Dash.spawnTrail(); }
+    var dashStartX = Player.x;
     var hit = Dash.move(Dash.direction * Dash.distanceLeft);
+    var dashEndX = Player.x;
+    var trailStep = CONFIG.PLAYER_SIZE / 2;
+    for (var trailX = dashStartX; ; trailX = trailX + Dash.direction * trailStep) {
+      Dash.spawnTrail(trailX, Player.y);
+      if (trailX === dashEndX) {
+        break;
+      }
+      if ((Dash.direction > 0 && trailX + trailStep > dashEndX) ||
+          (Dash.direction < 0 && trailX - trailStep < dashEndX)) {
+        trailX = dashEndX - Dash.direction * trailStep;
+      }
+    }
     Enemies.damageFromDash();
     Dash.distanceLeft = 0;
     Dash.state = "cooldown";
