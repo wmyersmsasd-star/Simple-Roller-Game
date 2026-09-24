@@ -22,6 +22,9 @@ Player.takeDamage = function (amount) {
   if (Player.health <= 0) {
     Player.health = 0;
   }
+  Effects.damageNumber(Player.x + CONFIG.PLAYER_SIZE / 2, Player.y, amount, "rgba(255, 91, 91, 1)");
+  Effects.hitBurst(Player.x + CONFIG.PLAYER_SIZE / 2, Player.y + CONFIG.PLAYER_SIZE / 2, "rgba(255, 91, 91, 1)");
+  Effects.flash = 5;
   Player.updateHud();
 };
 

@@ -179,6 +179,8 @@ Enemies.damageFromDash = function () {
     if (Player.x + CONFIG.PLAYER_SIZE > enemyLeft && Player.x < enemyRight &&
         Player.y + CONFIG.PLAYER_SIZE > enemyTop && Player.y < enemyBottom) {
       enemy.health = enemy.health - 15;
+      Effects.damageNumber(enemy.x, enemy.y - 18, 15, "rgba(122, 240, 255, 1)");
+      Effects.hitBurst(enemy.x, enemy.y, "rgba(122, 240, 255, 1)");
       if (enemy.health <= 0) {
         enemy.health = 0;
       }

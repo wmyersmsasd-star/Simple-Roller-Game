@@ -45,6 +45,7 @@ Draw.everything = function () {
   Draw.world();
   Enemies.draw();
   Draw.dashParticles();
+  Effects.draw();
   Draw.creatorPreview();
   Draw.player();
 

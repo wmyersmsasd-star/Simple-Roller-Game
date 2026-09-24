@@ -23,6 +23,7 @@ Game.startLevel = function (levelNumber) {
   Enemies.reset();
   Enemies.loadFromLevel();
   Player.reset();
+  Effects.reset();
   Game.mode = "playing";
   Game.creatorEnabled = false;
   Game.creatorHover = null;
@@ -108,6 +109,7 @@ Game.update = function () {
 
   Player.update();
   Enemies.update();
+  Effects.update();
   Player.updateHud();
 
   if (Player.isDead()) {
