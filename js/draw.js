@@ -43,6 +43,7 @@ Draw.everything = function () {
   ctx.translate(-Draw.cameraX, 0);
 
   Draw.world();
+  Enemies.draw();
   Draw.dashParticles();
   Draw.creatorPreview();
   Draw.player();

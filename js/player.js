@@ -85,6 +85,7 @@ Player.update = function () {
 Player.isDead = function () {
   var size = CONFIG.PLAYER_SIZE;
   if (Collide.hitsSpike(Player.x, Player.y, size, size)) { return true; }
+  if (Enemies.hitsPlayer()) { return true; }
   if (Player.y > CONFIG.CANVAS_H + 200) { return true; }   // fell off the world
   return false;
 };
