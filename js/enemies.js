@@ -61,6 +61,9 @@ Enemies.update = function () {
 
     if (enemy.type === "ranged") {
       enemy.cooldown = enemy.cooldown - 1;
+      if (Math.abs(dx) > CONFIG.TILE * 5) {
+        Enemies.followPlayer(enemy, dx);
+      }
       if (Math.abs(dx) < 260 && Math.abs(dy) < 80 && enemy.cooldown <= 0) {
         enemy.cooldown = 90;
         var projectileSpeed = 4;
@@ -82,6 +85,8 @@ Enemies.update = function () {
     enemy.cooldown = Math.max(0, enemy.cooldown - 1);
     enemy.attackTimer = Math.max(0, enemy.attackTimer - 1);
 
+    Enemies.followPlayer(enemy, dx);
+
     if (Math.abs(dx) < 72 && Math.abs(dy) < 28) {
       enemy.dir = dx >= 0 ? 1 : -1;
       if (enemy.cooldown <= 0) {
@@ -90,17 +95,6 @@ Enemies.update = function () {
       }
     }
 
-    if (Math.abs(dx) > 8) {
-      enemy.x = enemy.x + enemy.dir * 0.7;
-    }
-    if (enemy.x < enemy.minX) {
-      enemy.x = enemy.minX;
-      enemy.dir = 1;
-    }
-    if (enemy.x > enemy.maxX) {
-      enemy.x = enemy.maxX;
-      enemy.dir = -1;
-    }
   }
 
   Enemies.projectiles = Enemies.projectiles.filter(function (shot) {
@@ -114,6 +108,23 @@ Enemies.update = function () {
   Enemies.list = Enemies.list.filter(function (enemy) {
     return enemy.health > 0;
   });
+};
+
+Enemies.followPlayer = function (enemy, dx) {
+  if (Math.abs(dx) <= 8) { return; }
+
+  enemy.dir = dx > 0 ? 1 : -1;
+  var nextX = enemy.x + enemy.dir * 0.7;
+  var enemySize = 24;
+  var enemyLeft = nextX - enemySize / 2;
+  var enemyTop = enemy.y - enemySize / 2;
+
+  if (enemyLeft < 0 || enemyLeft + enemySize > Level.pixelWidth() ||
+      Collide.hitsSolid(enemyLeft, enemyTop, enemySize, enemySize)) {
+    return;
+  }
+
+  enemy.x = nextX;
 };
 
 Enemies.applyPlayerDamage = function () {
