@@ -11,6 +11,7 @@ var Dash = {
   stacks: 6,
   dashCooldownMs: 0,
   regenMs: 0,
+  durationMs: 0,
   lastFrameTime: 0
 };
 
@@ -34,11 +35,12 @@ Dash.reset = function () {
   Dash.stacks = 6;
   Dash.dashCooldownMs = 0;
   Dash.regenMs = 0;
+  Dash.durationMs = 0;
   Dash.lastFrameTime = Dash.now();
 };
 
 Dash.canDash = function () {
-  return Dash.state === "ready" && Dash.cooldown <= 0 && Dash.dashCooldownMs <= 0 && Dash.stacks > 0 && (Input.left || Input.right);
+  return Dash.state === "ready" && Dash.cooldown <= 0 && Dash.dashCooldownMs <= 0 && Dash.durationMs <= 0 && Dash.stacks > 0 && (Input.left || Input.right);
 };
 
 Dash.spawnTrail = function (trailX, trailY) {
@@ -106,6 +108,13 @@ Dash.update = function () {
     Dash.dashCooldownMs = Math.max(0, Dash.dashCooldownMs - deltaMs);
   }
 
+  if (Dash.durationMs > 0) {
+    Dash.durationMs = Math.max(0, Dash.durationMs - deltaMs);
+    if (Dash.durationMs === 0) {
+      Dash.state = "ready";
+    }
+  }
+
   if (Dash.regenMs > 0) {
     Dash.regenMs = Math.max(0, Dash.regenMs - deltaMs);
     if (Dash.regenMs === 0) {
@@ -132,7 +141,9 @@ Dash.update = function () {
       Dash.stacks = 0;
       Dash.regenMs = 1000;
     }
-    Dash.dashCooldownMs = 10;
+    Dash.dashCooldownMs = CONFIG.DASH_DURATION_MS;
+    Dash.durationMs = CONFIG.DASH_DURATION_MS;
+    Dash.state = "dashing";
     Player.invulnerable = true;
     var dashStartX = Player.x;
     var hit = Dash.move(Dash.direction * Dash.distanceLeft);
