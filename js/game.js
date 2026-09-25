@@ -12,9 +12,7 @@
 var Game = {
   mode: "playing",   // "playing", "dead", or "won"
   levelNumber: 0,
-  creatorEnabled: false,
-  creatorBrush: "#",
-  creatorHover: null
+  restartWasDown: false
 };
 
 Game.startLevel = function (levelNumber) {
@@ -25,8 +23,6 @@ Game.startLevel = function (levelNumber) {
   Player.reset();
   Effects.reset();
   Game.mode = "playing";
-  Game.creatorEnabled = false;
-  Game.creatorHover = null;
   Game.showMessage("");
 };
 
@@ -34,73 +30,23 @@ Game.showMessage = function (text) {
   document.getElementById("message").textContent = text;
 };
 
-Game.bindCreatorUI = function () {
-  var brushButtons = document.querySelectorAll(".creator-brush");
-
-  brushButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      Game.creatorBrush = button.dataset.brush;
-      brushButtons.forEach(function (otherButton) {
-        otherButton.classList.toggle("active", otherButton === button);
-      });
-    });
-  });
-
-  var canvas = document.getElementById("game");
-  if (canvas) {
-    canvas.addEventListener("mousemove", function (event) {
-      if (!Game.creatorEnabled) { return; }
-      var rect = canvas.getBoundingClientRect();
-      var x = event.clientX - rect.left;
-      var y = event.clientY - rect.top;
-      var col = Math.floor((x + Draw.cameraX) / CONFIG.TILE);
-      var row = Math.floor(y / CONFIG.TILE);
-      Game.creatorHover = { col: col, row: row };
-    });
-
-    canvas.addEventListener("mouseleave", function () {
-      Game.creatorHover = null;
-    });
-
-    canvas.addEventListener("click", function (event) {
-      if (!Game.creatorEnabled) { return; }
-      var rect = canvas.getBoundingClientRect();
-      var x = event.clientX - rect.left;
-      var y = event.clientY - rect.top;
-      var col = Math.floor((x + Draw.cameraX) / CONFIG.TILE);
-      var row = Math.floor(y / CONFIG.TILE);
-
-      if (row < 0 || row >= CONFIG.ROWS || col < 0 || col >= Level.cols) { return; }
-      if (Level.charAt(col, row) === "S") { return; }
-
-      if (Game.creatorBrush === ".") {
-        Level.setTile(col, row, ".");
-      } else {
-        Level.setTile(col, row, Game.creatorBrush);
-      }
-    });
-  }
-};
-
 // --- ONE FRAME --------------------------------------------------------
 Game.update = function () {
 
-  if (Input.creatorToggle && !Game.creatorEnabled) {
-    Game.creatorEnabled = true;
-    Game.showMessage("Creator mode: click to paint. Press K to exit.");
-  } else if (!Input.creatorToggle && Game.creatorEnabled) {
-    Game.creatorEnabled = false;
-    Game.showMessage("");
-    Game.creatorHover = null;
-  }
+  var restartPressed = Input.restart && !Game.restartWasDown;
+  Game.restartWasDown = Input.restart;
 
-  // R always restarts, no matter what mode we are in.
-  if (Input.restart) {
-    Game.startLevel(Game.levelNumber);
-    return;
-  }
-
-  if (Game.creatorEnabled) {
+  if (restartPressed) {
+    if (Game.mode === "won") {
+      var nextLevel = Game.levelNumber + 1;
+      if (nextLevel < Level.levels.length) {
+        Game.startLevel(nextLevel);
+      } else {
+        Game.startLevel(0);
+      }
+    } else {
+      Game.startLevel(Game.levelNumber);
+    }
     return;
   }
 
@@ -118,9 +64,13 @@ Game.update = function () {
     return;
   }
 
-  if (Player.hasWon()) {
+  if (Player.hasWon() && Enemies.list.length === 0) {
     Game.mode = "won";
-    Game.showMessage("You made it. Press R to play again.");
+    if (Game.levelNumber < Level.levels.length - 1) {
+      Game.showMessage("Level clear! Press R for the next level.");
+    } else {
+      Game.showMessage("All levels clear! Press R to play again.");
+    }
     return;
   }
 };

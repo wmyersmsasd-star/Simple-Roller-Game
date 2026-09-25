@@ -9,7 +9,6 @@
    ===================================================================== */
 
 Draw.setup();
-Game.bindCreatorUI();
 
 Level.loadData(function () {
   Game.startLevel(CONFIG.START_LEVEL);

@@ -22,7 +22,7 @@ var Player = {
 };
 
 Player.takeDamage = function (amount) {
-  if (Player.invulnerable) { return; }
+  if (Player.invulnerable || Dash.isMoving()) { return; }
 
   Player.health = Math.max(0, Player.health - amount);
   if (Player.health <= 0) {

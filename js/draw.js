@@ -39,7 +39,7 @@ Draw.everything = function () {
   var ctx = Draw.ctx;
 
   // 1. wipe the screen with a darker, richer backdrop
-  ctx.fillStyle = "#090d18";
+  ctx.fillStyle = Level.colors.background;
   ctx.fillRect(0, 0, CONFIG.CANVAS_W, CONFIG.CANVAS_H);
 
   // 2. shift everything left so the camera looks like it moved right
@@ -50,7 +50,6 @@ Draw.everything = function () {
   Enemies.draw();
   Draw.dashParticles();
   Effects.draw();
-  Draw.creatorPreview();
   Draw.player();
 
   ctx.restore();
@@ -58,49 +57,6 @@ Draw.everything = function () {
   if (Effects.flash > 0) {
     ctx.fillStyle = "rgba(255, 91, 91, " + (Effects.flash / 5) * 0.16 + ")";
     ctx.fillRect(0, 0, CONFIG.CANVAS_W, CONFIG.CANVAS_H);
-  }
-};
-
-Draw.creatorPreview = function () {
-  if (!Game.creatorEnabled || !Game.creatorHover) { return; }
-
-  var ctx = Draw.ctx;
-  var x = Game.creatorHover.col * CONFIG.TILE;
-  var y = Game.creatorHover.row * CONFIG.TILE;
-  var hoverChar = Game.creatorBrush;
-
-  ctx.strokeStyle = "rgba(122, 240, 255, 0.9)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(x + 1, y + 1, CONFIG.TILE - 2, CONFIG.TILE - 2);
-
-  if (hoverChar === "#") {
-    ctx.fillStyle = "rgba(122, 240, 255, 0.28)";
-    ctx.fillRect(x, y, CONFIG.TILE, CONFIG.TILE);
-  }
-  if (hoverChar === "^") {
-    ctx.fillStyle = "rgba(255, 106, 72, 0.28)";
-    ctx.beginPath();
-    ctx.moveTo(x, y + CONFIG.TILE);
-    ctx.lineTo(x + CONFIG.TILE / 2, y);
-    ctx.lineTo(x + CONFIG.TILE, y + CONFIG.TILE);
-    ctx.closePath();
-    ctx.fill();
-  }
-  if (hoverChar === "F") {
-    ctx.fillStyle = "rgba(74, 241, 255, 0.28)";
-    ctx.fillRect(x + CONFIG.TILE / 2 - 2, y, 4, CONFIG.TILE);
-    ctx.beginPath();
-    ctx.moveTo(x + CONFIG.TILE / 2 + 2, y + 4);
-    ctx.lineTo(x + CONFIG.TILE - 4, y + 12);
-    ctx.lineTo(x + CONFIG.TILE / 2 + 2, y + 20);
-    ctx.closePath();
-    ctx.fill();
-  }
-  if (hoverChar === "R" || hoverChar === "M") {
-    ctx.fillStyle = hoverChar === "R" ? "rgba(100, 215, 255, 0.28)" : "rgba(255, 123, 84, 0.28)";
-    ctx.fillRect(x + 4, y + 4, CONFIG.TILE - 8, CONFIG.TILE - 8);
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
-    ctx.strokeRect(x + 5, y + 5, CONFIG.TILE - 10, CONFIG.TILE - 10);
   }
 };
 
@@ -143,9 +99,9 @@ Draw.world = function () {
 // A solid block: white inside, black outline.
 Draw.block = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#0b1220";
+  ctx.fillStyle = Level.colors.block;
   ctx.fillRect(x, y, size, size);
-  ctx.strokeStyle = "#ff4fd8";
+  ctx.strokeStyle = Level.colors.outline;
   ctx.lineWidth = CONFIG.LINE_WIDTH;
   ctx.strokeRect(x + CONFIG.LINE_WIDTH / 2,
                  y + CONFIG.LINE_WIDTH / 2,
@@ -156,7 +112,7 @@ Draw.block = function (x, y, size) {
 // A spike: a solid black triangle pointing up.
 Draw.spike = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#ff5a36";
+  ctx.fillStyle = Level.colors.hazard;
   ctx.beginPath();
   ctx.moveTo(x, y + size);
   ctx.lineTo(x + size / 2, y);
@@ -168,7 +124,7 @@ Draw.spike = function (x, y, size) {
 // The finish: a black pole with a flag on it.
 Draw.finish = function (x, y, size) {
   var ctx = Draw.ctx;
-  ctx.fillStyle = "#4ae6ff";
+  ctx.fillStyle = Level.colors.finish;
   ctx.fillRect(x + size / 2 - 2, y, 4, size);
   ctx.beginPath();
   ctx.moveTo(x + size / 2 + 2, y + 4);
@@ -187,8 +143,8 @@ Draw.player = function () {
   var centerY = Player.y + CONFIG.PLAYER_SIZE / 2;
 
   // the circle
-  ctx.fillStyle = "#24163d";
-  ctx.strokeStyle = "#7af0ff";
+  ctx.fillStyle = Level.colors.player;
+  ctx.strokeStyle = Level.colors.playerOutline;
   ctx.lineWidth = CONFIG.LINE_WIDTH;
   ctx.beginPath();
   ctx.arc(centerX, centerY, r, 0, Math.PI * 2);

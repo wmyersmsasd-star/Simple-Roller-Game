@@ -15,6 +15,7 @@ var Level = {
   grid: [],         // the finished world. grid[row][col] is one character
   cols: 0,          // how many columns wide the finished world is
   name: "",
+  colors: null,
   startX: 0,        // where the player begins, in pixels
   startY: 0
 };
@@ -43,6 +44,18 @@ Level.loadData = function (whenDone) {
 Level.build = function (levelNumber) {
   var level = Level.levels[levelNumber];
   Level.name = level.name;
+  Level.colors = level.colors || {
+    background: "#090d18",
+    block: "#0b1220",
+    outline: "#ff4fd8",
+    hazard: "#ff5a36",
+    finish: "#4ae6ff",
+    player: "#24163d",
+    playerOutline: "#7af0ff",
+    ranged: "#64d7ff",
+    melee: "#ff7b54",
+    projectile: "#ff7a59"
+  };
   Level.grid = [];
   Level.cols = level.pieces.length * CONFIG.PIECE_COLS;
 

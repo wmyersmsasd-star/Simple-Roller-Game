@@ -233,7 +233,7 @@ Enemies.draw = function () {
 
   for (var i = 0; i < Enemies.projectiles.length; i++) {
     var shot = Enemies.projectiles[i];
-    ctx.fillStyle = "#ff7a59";
+    ctx.fillStyle = Level.colors.projectile;
     ctx.beginPath();
     ctx.arc(shot.x, shot.y, shot.radius, 0, Math.PI * 2);
     ctx.fill();
@@ -245,7 +245,7 @@ Enemies.draw = function () {
     var centerY = enemy.y;
 
     if (enemy.type === "ranged") {
-      ctx.fillStyle = "#64d7ff";
+      ctx.fillStyle = Level.colors.ranged;
       ctx.fillRect(centerX - 12, centerY - 12, 24, 24);
       ctx.fillStyle = "#0d1c2b";
       ctx.fillRect(centerX - 8, centerY - 4, 4, 4);
@@ -254,7 +254,7 @@ Enemies.draw = function () {
       ctx.lineWidth = 2;
       ctx.strokeRect(centerX - 12, centerY - 12, 24, 24);
     } else {
-      ctx.fillStyle = "#ff7b54";
+      ctx.fillStyle = Level.colors.melee;
       ctx.fillRect(centerX - 12, centerY - 12, 24, 24);
       ctx.fillStyle = "#fff5ef";
       ctx.fillRect(centerX + 10, centerY - 4, 14, 4);

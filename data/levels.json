@@ -28,6 +28,96 @@
         "flat",
         "finish"
       ]
+    },
+    {
+      "name": "Level 3 - Crimson Crossing",
+      "pieces": ["start", "flat", "melee", "gap", "spikes", "ranged", "finish"],
+      "colors": {
+        "background": "#21161b", "block": "#38222a", "outline": "#ff6b6b",
+        "hazard": "#ffb86b", "finish": "#ffe66d", "player": "#51263a",
+        "playerOutline": "#ffd6e0", "ranged": "#55d6ff", "melee": "#ff8a5b", "projectile": "#ffc857"
+      }
+    },
+    {
+      "name": "Level 4 - Jade Switchback",
+      "pieces": ["start", "stairs", "ranged", "gap", "melee", "spikepit", "ranged", "finish"],
+      "colors": {
+        "background": "#10221d", "block": "#17352c", "outline": "#4ade80",
+        "hazard": "#f97316", "finish": "#d9f99d", "player": "#143b3a",
+        "playerOutline": "#a7f3d0", "ranged": "#38bdf8", "melee": "#fb7185", "projectile": "#facc15"
+      }
+    },
+    {
+      "name": "Level 5 - Amber Gauntlet",
+      "pieces": ["start", "spikepit", "ranged", "gap", "melee", "spikes", "ranged", "melee", "finish"],
+      "colors": {
+        "background": "#211c12", "block": "#3b301b", "outline": "#fbbf24",
+        "hazard": "#fb7185", "finish": "#67e8f9", "player": "#463316",
+        "playerOutline": "#fde68a", "ranged": "#38bdf8", "melee": "#f97316", "projectile": "#a3e635"
+      }
+    },
+    {
+      "name": "Level 6 - Glacier Run",
+      "pieces": ["start", "gap", "stairs", "melee", "spikepit", "ranged", "gap", "melee", "ranged", "melee", "finish"],
+      "colors": {
+        "background": "#101c29", "block": "#1c3040", "outline": "#60a5fa",
+        "hazard": "#fb7185", "finish": "#a5f3fc", "player": "#1e3a5f",
+        "playerOutline": "#bfdbfe", "ranged": "#34d399", "melee": "#f472b6", "projectile": "#fcd34d"
+      }
+    },
+    {
+      "name": "Level 7 - Violet Foundry",
+      "pieces": ["start", "ranged", "spikes", "melee", "gap", "spikepit", "ranged", "melee", "ranged", "melee", "finish"],
+      "colors": {
+        "background": "#1e1630", "block": "#30204b", "outline": "#c084fc",
+        "hazard": "#fb7185", "finish": "#f0abfc", "player": "#39215a",
+        "playerOutline": "#e9d5ff", "ranged": "#67e8f9", "melee": "#fb923c", "projectile": "#facc15"
+      }
+    },
+    {
+      "name": "Level 8 - Acid Circuit",
+      "pieces": ["start", "spikepit", "melee", "stairs", "ranged", "gap", "spikes", "melee", "ranged", "melee", "ranged", "melee", "finish"],
+      "colors": {
+        "background": "#17220c", "block": "#293b15", "outline": "#a3e635",
+        "hazard": "#ff5a36", "finish": "#fef08a", "player": "#31451a",
+        "playerOutline": "#d9f99d", "ranged": "#22d3ee", "melee": "#fb7185", "projectile": "#f97316"
+      }
+    },
+    {
+      "name": "Level 9 - Tidal Pressure",
+      "pieces": ["start", "gap", "ranged", "spikepit", "melee", "spikes", "ranged", "melee", "ranged", "melee", "ranged", "melee", "finish"],
+      "colors": {
+        "background": "#10232b", "block": "#153945", "outline": "#2dd4bf",
+        "hazard": "#fda4af", "finish": "#f9a8d4", "player": "#174e59",
+        "playerOutline": "#a7f3d0", "ranged": "#60a5fa", "melee": "#fb923c", "projectile": "#facc15"
+      }
+    },
+    {
+      "name": "Level 10 - Solar Siege",
+      "pieces": ["start", "stairs", "ranged", "gap", "melee", "spikepit", "ranged", "spikes", "melee", "ranged", "melee", "ranged", "melee", "ranged", "finish"],
+      "colors": {
+        "background": "#26170e", "block": "#402619", "outline": "#f97316",
+        "hazard": "#facc15", "finish": "#fde68a", "player": "#512a13",
+        "playerOutline": "#fdba74", "ranged": "#22d3ee", "melee": "#e879f9", "projectile": "#a3e635"
+      }
+    },
+    {
+      "name": "Level 11 - Rose Rift",
+      "pieces": ["start", "ranged", "spikepit", "melee", "gap", "stairs", "ranged", "spikes", "melee", "platform", "ranged", "melee", "ranged", "melee", "ranged", "melee", "finish"],
+      "colors": {
+        "background": "#291421", "block": "#442037", "outline": "#f472b6",
+        "hazard": "#fbbf24", "finish": "#67e8f9", "player": "#542343",
+        "playerOutline": "#fbcfe8", "ranged": "#60a5fa", "melee": "#fb7185", "projectile": "#bef264"
+      }
+    },
+    {
+      "name": "Level 12 - Prism Gauntlet",
+      "pieces": ["start", "gap", "ranged", "spikes", "melee", "spikepit", "ranged", "stairs", "melee", "gap", "ranged", "spikes", "melee", "ranged", "melee", "ranged", "melee", "ranged", "finish"],
+      "colors": {
+        "background": "#13172a", "block": "#252d4c", "outline": "#818cf8",
+        "hazard": "#f97316", "finish": "#86efac", "player": "#34325a",
+        "playerOutline": "#e0e7ff", "ranged": "#2dd4bf", "melee": "#fb7185", "projectile": "#facc15"
+      }
     }
   ]
 }

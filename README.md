@@ -14,7 +14,7 @@ Press `Ctrl + Shift + R` to hard refresh, or you will see the old version.
 - LEFT / RIGHT arrow - roll
 - SPACE or UP arrow - jump
 - X while holding LEFT or RIGHT - dash four blocks and break the first block hit
-- R - restart the level
+- R - restart the level, or continue after clearing it
 
 ## Where everything lives
 
