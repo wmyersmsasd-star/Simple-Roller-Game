@@ -22,12 +22,16 @@ Draw.setup = function () {
 
 // Follow the player, but never scroll past the ends of the level.
 Draw.updateCamera = function () {
-  Draw.cameraX = Player.x - CONFIG.CANVAS_W / 2;
-  if (Draw.cameraX < 0) { Draw.cameraX = 0; }
-
+  var targetCameraX = Player.x - CONFIG.CANVAS_W / 2;
   var furthest = Level.pixelWidth() - CONFIG.CANVAS_W;
   if (furthest < 0) { furthest = 0; }   // level narrower than the screen
-  if (Draw.cameraX > furthest) { Draw.cameraX = furthest; }
+  if (targetCameraX < 0) { targetCameraX = 0; }
+  if (targetCameraX > furthest) { targetCameraX = furthest; }
+
+  Draw.cameraX = Draw.cameraX + (targetCameraX - Draw.cameraX) * CONFIG.CAMERA_SMOOTHING;
+  if (Math.abs(targetCameraX - Draw.cameraX) < 0.1) {
+    Draw.cameraX = targetCameraX;
+  }
 };
 
 // Draw one whole frame.
@@ -50,6 +54,11 @@ Draw.everything = function () {
   Draw.player();
 
   ctx.restore();
+
+  if (Effects.flash > 0) {
+    ctx.fillStyle = "rgba(255, 91, 91, " + (Effects.flash / 5) * 0.16 + ")";
+    ctx.fillRect(0, 0, CONFIG.CANVAS_W, CONFIG.CANVAS_H);
+  }
 };
 
 Draw.creatorPreview = function () {

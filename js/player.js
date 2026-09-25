@@ -13,6 +13,9 @@ var Player = {
   vx: 0,           // speed left and right
   vy: 0,           // speed up and down
   onGround: false, // is the player standing on something right now?
+  jumpsUsed: 0,
+  jumpWasDown: false,
+  coyoteFrames: 0,
   angle: 0,        // how far the circle has rolled, for drawing the dot
   health: 100,     // current health; no regeneration
   invulnerable: false
@@ -45,6 +48,9 @@ Player.reset = function () {
   Player.vx = 0;
   Player.vy = 0;
   Player.onGround = false;
+  Player.jumpsUsed = 0;
+  Player.jumpWasDown = false;
+  Player.coyoteFrames = 0;
   Player.angle = 0;
   Player.health = CONFIG.PLAYER_MAX_HEALTH;
   Player.invulnerable = false;
@@ -55,6 +61,14 @@ Player.reset = function () {
 // Run one frame of player movement.
 Player.update = function () {
   var size = CONFIG.PLAYER_SIZE;
+  var jumpPressed = Input.jump && !Player.jumpWasDown;
+  Player.jumpWasDown = Input.jump;
+
+  if (Player.onGround) {
+    Player.coyoteFrames = CONFIG.COYOTE_FRAMES;
+  } else if (Player.coyoteFrames > 0) {
+    Player.coyoteFrames = Player.coyoteFrames - 1;
+  }
 
   Dash.update();
 
@@ -66,9 +80,12 @@ Player.update = function () {
   }
 
   // --- 2. jump, but only if we are standing on something --------------
-  if (Input.jump && Player.onGround) {
+  if ((Input.jump && Player.onGround) ||
+      (jumpPressed && (Player.coyoteFrames > 0 || Player.jumpsUsed < CONFIG.MAX_JUMPS))) {
     Player.vy = -CONFIG.JUMP_POWER;   // negative is UP
     Player.onGround = false;
+    Player.coyoteFrames = 0;
+    Player.jumpsUsed = Player.jumpsUsed + 1;
   }
 
   // --- 3. gravity pulls down every single frame -----------------------
@@ -95,7 +112,10 @@ Player.update = function () {
 
   for (var j = 0; j < Math.abs(Player.vy); j++) {
     if (Collide.hitsSolid(Player.x, Player.y + stepY, size, size)) {
-      if (stepY > 0) { Player.onGround = true; }  // we landed on something
+      if (stepY > 0) {
+        Player.onGround = true;
+        Player.jumpsUsed = 0;
+      }  // we landed on something
       Player.vy = 0;
       break;
     }

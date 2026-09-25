@@ -20,6 +20,8 @@ var CONFIG = {
   // --- how the player moves -------------------------------------------
    MOVE_SPEED: 5,      // pixels per frame left and right
    JUMP_POWER: 16,     // how hard the jump pushes UP. bigger = higher
+   MAX_JUMPS: 2,
+   COYOTE_FRAMES: 6,
    GRAVITY: 0.9,       // how hard the world pulls DOWN. bigger = heavier
    MAX_FALL: 18,       // fastest the player is allowed to fall
 
@@ -38,7 +40,10 @@ var CONFIG = {
    START_LEVEL: 0,          // which level in data/levels.json to load first
    DASH_DISTANCE: 160,      // four 40-pixel blocks
    DASH_SPEED: 8,
+   CAMERA_SMOOTHING: 0.14,
    DASH_COOLDOWN_FRAMES: 20,
+   MELEE_DASH_DISTANCE: 96,
+   MELEE_DASH_SPEED: 6,
    ENEMY_MOVE_SPEED: 1.1,
    RANGED_ATTACK_COOLDOWN: 65,
    MELEE_ATTACK_COOLDOWN: 30,

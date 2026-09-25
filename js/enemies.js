@@ -20,7 +20,10 @@ Enemies.loadFromLevel = function () {
         y: row * CONFIG.TILE + CONFIG.TILE / 2,
         dir: 1,
         cooldown: 40,
-        attackTimer: 0,
+        dashDistanceLeft: 0,
+        dashDirection: 1,
+        dashHit: false,
+        lastPlayerDash: 0,
         health: CONFIG.ENEMY_MAX_HEALTH,
         minX: col * CONFIG.TILE + 8,
         maxX: (col + 1) * CONFIG.TILE - 8,
@@ -67,8 +70,9 @@ Enemies.update = function () {
       if (Math.abs(dx) < 260 && Math.abs(dy) < 80 && enemy.cooldown <= 0) {
         enemy.cooldown = CONFIG.RANGED_ATTACK_COOLDOWN;
         var projectileSpeed = 4;
-        var shotDx = Math.abs(dx) > 0 ? dx / Math.abs(dx) : 1;
-        var shotDy = dy / Math.max(Math.abs(dx), 1);
+        var shotDistance = Math.sqrt(dx * dx + dy * dy);
+        var shotDx = shotDistance > 0 ? dx / shotDistance : enemy.dir;
+        var shotDy = shotDistance > 0 ? dy / shotDistance : 0;
         Enemies.projectiles.push({
           x: enemy.x,
           y: enemy.y,
@@ -83,7 +87,11 @@ Enemies.update = function () {
     }
 
     enemy.cooldown = Math.max(0, enemy.cooldown - 1);
-    enemy.attackTimer = Math.max(0, enemy.attackTimer - 1);
+
+    if (enemy.dashDistanceLeft > 0) {
+      Enemies.updateMeleeDash(enemy);
+      continue;
+    }
 
     Enemies.followPlayer(enemy, dx);
 
@@ -91,7 +99,9 @@ Enemies.update = function () {
       enemy.dir = dx >= 0 ? 1 : -1;
       if (enemy.cooldown <= 0) {
         enemy.cooldown = CONFIG.MELEE_ATTACK_COOLDOWN;
-        enemy.attackTimer = 12;
+        enemy.dashDirection = enemy.dir;
+        enemy.dashDistanceLeft = CONFIG.MELEE_DASH_DISTANCE;
+        enemy.dashHit = false;
       }
     }
 
@@ -108,6 +118,25 @@ Enemies.update = function () {
   Enemies.list = Enemies.list.filter(function (enemy) {
     return enemy.health > 0;
   });
+};
+
+Enemies.updateMeleeDash = function (enemy) {
+  var dashStartX = enemy.x;
+  var dashStep = Math.min(CONFIG.MELEE_DASH_SPEED, enemy.dashDistanceLeft);
+  var nextX = enemy.x + enemy.dashDirection * dashStep;
+  var enemySize = 24;
+  var enemyLeft = nextX - enemySize / 2;
+  var enemyTop = enemy.y - enemySize / 2;
+
+  if (enemyLeft < 0 || enemyLeft + enemySize > Level.pixelWidth() ||
+      Collide.hitsSolid(enemyLeft, enemyTop, enemySize, enemySize)) {
+    enemy.dashDistanceLeft = 0;
+    return;
+  }
+
+  enemy.x = nextX;
+  enemy.dashDistanceLeft = enemy.dashDistanceLeft - dashStep;
+  Enemies.damagePlayerFromDash(enemy, dashStartX, enemy.x);
 };
 
 Enemies.followPlayer = function (enemy, dx) {
@@ -148,21 +177,22 @@ Enemies.applyPlayerDamage = function () {
     }
   }
 
-  for (var j = 0; j < Enemies.list.length; j++) {
-    var enemy = Enemies.list[j];
-    if (enemy.type !== "melee") { continue; }
+};
 
-    var enemyLeft = enemy.x - 16;
-    var enemyRight = enemy.x + 16;
-    var enemyTop = enemy.y - 16;
-    var enemyBottom = enemy.y + 16;
+Enemies.damagePlayerFromDash = function (enemy, dashStartX, dashEndX) {
+  if (enemy.dashHit) { return; }
 
-    if (enemy.attackTimer > 0 && enemyRight > playerLeft && enemyLeft < playerRight &&
-        enemyBottom > playerTop && enemyTop < playerBottom) {
-      Player.takeDamage(20);
-      enemy.attackTimer = 0;
-      enemy.cooldown = 30;
-    }
+  var dashLeft = Math.min(dashStartX, dashEndX) - 16;
+  var dashRight = Math.max(dashStartX, dashEndX) + 16;
+  var playerLeft = Player.x;
+  var playerRight = Player.x + CONFIG.PLAYER_SIZE;
+  var playerTop = Player.y;
+  var playerBottom = Player.y + CONFIG.PLAYER_SIZE;
+
+  if (dashRight > playerLeft && dashLeft < playerRight &&
+      enemy.y + 16 > playerTop && enemy.y - 16 < playerBottom) {
+    Player.takeDamage(20);
+    enemy.dashHit = true;
   }
 };
 
@@ -174,7 +204,7 @@ Enemies.damageFromDash = function (dashStartX, dashEndX) {
 
   for (var i = 0; i < Enemies.list.length; i++) {
     var enemy = Enemies.list[i];
-    if (enemy.health <= 0) { continue; }
+    if (enemy.health <= 0 || enemy.lastPlayerDash === Dash.sequence) { continue; }
 
     var enemyLeft = enemy.x - 16;
     var enemyRight = enemy.x + 16;
@@ -184,6 +214,7 @@ Enemies.damageFromDash = function (dashStartX, dashEndX) {
     if (dashRight > enemyLeft && dashLeft < enemyRight &&
       playerBottom > enemyTop && playerTop < enemyBottom) {
       enemy.health = enemy.health - 15;
+      enemy.lastPlayerDash = Dash.sequence;
       Effects.damageNumber(enemy.x, enemy.y - 18, 15, "rgba(122, 240, 255, 1)");
       Effects.hitBurst(enemy.x, enemy.y, "rgba(122, 240, 255, 1)");
       if (enemy.health <= 0) {

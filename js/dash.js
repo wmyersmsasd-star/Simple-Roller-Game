@@ -4,6 +4,7 @@ var Dash = {
   distanceLeft: 0,
   dashWasDown: false,
   cooldown: 0,
+  sequence: 0,
   trail: [],
   line: null
 };
@@ -14,6 +15,7 @@ Dash.reset = function () {
   Dash.distanceLeft = 0;
   Dash.dashWasDown = false;
   Dash.cooldown = 0;
+  Dash.sequence = 0;
   Dash.trail = [];
   Dash.line = null;
 };
@@ -88,13 +90,15 @@ Dash.update = function () {
     if (Input.left) { Dash.direction = -1; }
     if (Input.right) { Dash.direction = 1; }
     Dash.distanceLeft = CONFIG.DASH_DISTANCE;
+    Dash.sequence = Dash.sequence + 1;
     Dash.state = "dashing";
   }
 
   if (Dash.state === "dashing") {
     Player.invulnerable = true;
     var dashStartX = Player.x;
-    var hit = Dash.move(Dash.direction * Dash.distanceLeft);
+    var dashStep = Math.min(CONFIG.DASH_SPEED, Dash.distanceLeft);
+    var hit = Dash.move(Dash.direction * dashStep);
     var dashEndX = Player.x;
     Dash.line = {
       startX: dashStartX + CONFIG.PLAYER_SIZE / 2,
@@ -103,15 +107,15 @@ Dash.update = function () {
       life: 18,
       maxLife: 18
     };
+    Dash.spawnTrail();
     Enemies.damageFromDash(dashStartX, dashEndX);
-    Dash.distanceLeft = 0;
-    Dash.state = "cooldown";
-    Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
-    if (hit) {
+    Dash.distanceLeft = Dash.distanceLeft - dashStep;
+    if (hit || Dash.distanceLeft <= 0) {
       Dash.state = "cooldown";
       Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
     }
   } else if (Dash.state === "bouncing") {
+    Dash.spawnTrail();
     Dash.move(-Dash.direction * Math.min(CONFIG.BOUNCE_SPEED, Dash.distanceLeft));
     Dash.distanceLeft = Dash.distanceLeft - CONFIG.BOUNCE_SPEED;
     if (Dash.distanceLeft <= 0) {
