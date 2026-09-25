@@ -122,8 +122,9 @@ Dash.update = function () {
     }
   }
 
-  var justPressed = Input.dash && !Dash.dashWasDown;
-  Dash.dashWasDown = Input.dash;
+  var dashComboDown = Input.dash && (Input.left || Input.right);
+  var justPressed = dashComboDown && !Dash.dashWasDown;
+  Dash.dashWasDown = dashComboDown;
   Dash.updateTrail();
 
   if (Dash.state === "cooldown") {
