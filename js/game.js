@@ -22,6 +22,7 @@ Game.startLevel = function (levelNumber) {
   Enemies.loadFromLevel();
   Player.reset();
   Effects.reset();
+  SkyBeam.reset();
   Game.mode = "playing";
   Game.showMessage("");
 };
@@ -53,6 +54,7 @@ Game.update = function () {
   // If we are not playing, nothing moves. We just wait for R.
   if (Game.mode !== "playing") { return; }
 
+  SkyBeam.update();
   Player.update();
   Enemies.update();
   Effects.update();

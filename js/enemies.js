@@ -213,14 +213,31 @@ Enemies.damageFromDash = function (dashStartX, dashEndX) {
 
     if (dashRight > enemyLeft && dashLeft < enemyRight &&
       playerBottom > enemyTop && playerTop < enemyBottom) {
-      enemy.health = enemy.health - 15;
+      enemy.health = enemy.health - 30;
       enemy.lastPlayerDash = Dash.sequence;
-      Effects.damageNumber(enemy.x, enemy.y - 18, 15, "rgba(122, 240, 255, 1)");
+      Effects.damageNumber(enemy.x, enemy.y - 18, 30, "rgba(122, 240, 255, 1)");
       Effects.hitBurst(enemy.x, enemy.y, "rgba(122, 240, 255, 1)");
       if (enemy.health <= 0) {
         enemy.health = 0;
       }
     }
+  }
+};
+
+Enemies.damageFromBeam = function (centerX, width, damage) {
+  var beamLeft = centerX - width / 2;
+  var beamRight = centerX + width / 2;
+
+  for (var i = 0; i < Enemies.list.length; i++) {
+    var enemy = Enemies.list[i];
+    var enemyLeft = enemy.x - 16;
+    var enemyRight = enemy.x + 16;
+
+    if (enemy.health <= 0 || beamRight <= enemyLeft || beamLeft >= enemyRight) { continue; }
+
+    enemy.health = Math.max(0, enemy.health - damage);
+    Effects.damageNumber(enemy.x, enemy.y - 18, damage, "rgba(122, 240, 255, 1)");
+    Effects.hitBurst(enemy.x, enemy.y, "rgba(122, 240, 255, 1)");
   }
 };
 

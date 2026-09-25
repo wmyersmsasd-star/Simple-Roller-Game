@@ -51,6 +51,7 @@ Draw.everything = function () {
   Draw.dashParticles();
   Effects.draw();
   Draw.player();
+  SkyBeam.draw();
 
   ctx.restore();
 

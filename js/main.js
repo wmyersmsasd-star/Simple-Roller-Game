@@ -9,6 +9,7 @@
    ===================================================================== */
 
 Draw.setup();
+SkyBeam.setup();
 
 Level.loadData(function () {
   Game.startLevel(CONFIG.START_LEVEL);
