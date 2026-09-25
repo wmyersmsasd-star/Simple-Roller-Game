@@ -6,7 +6,19 @@ var Dash = {
   cooldown: 0,
   sequence: 0,
   trail: [],
-  line: null
+  line: null,
+  maxStacks: 6,
+  stacks: 6,
+  dashCooldownMs: 0,
+  regenMs: 0,
+  lastFrameTime: 0
+};
+
+Dash.now = function () {
+  if (typeof performance !== "undefined" && performance.now) {
+    return performance.now();
+  }
+  return Date.now();
 };
 
 Dash.reset = function () {
@@ -18,10 +30,15 @@ Dash.reset = function () {
   Dash.sequence = 0;
   Dash.trail = [];
   Dash.line = null;
+  Dash.maxStacks = 6;
+  Dash.stacks = 6;
+  Dash.dashCooldownMs = 0;
+  Dash.regenMs = 0;
+  Dash.lastFrameTime = Dash.now();
 };
 
 Dash.canDash = function () {
-  return Dash.state === "ready" && Dash.cooldown <= 0 && (Input.left || Input.right);
+  return Dash.state === "ready" && Dash.cooldown <= 0 && Dash.dashCooldownMs <= 0 && Dash.stacks > 0 && (Input.left || Input.right);
 };
 
 Dash.spawnTrail = function (trailX, trailY) {
@@ -77,6 +94,25 @@ Dash.move = function (distance) {
 
 Dash.update = function () {
   Player.invulnerable = false;
+  var now = Dash.now();
+  var deltaMs = 0;
+
+  if (Dash.lastFrameTime > 0) {
+    deltaMs = Math.max(0, now - Dash.lastFrameTime);
+  }
+  Dash.lastFrameTime = now;
+
+  if (Dash.dashCooldownMs > 0) {
+    Dash.dashCooldownMs = Math.max(0, Dash.dashCooldownMs - deltaMs);
+  }
+
+  if (Dash.regenMs > 0) {
+    Dash.regenMs = Math.max(0, Dash.regenMs - deltaMs);
+    if (Dash.regenMs === 0) {
+      Dash.stacks = Dash.maxStacks;
+    }
+  }
+
   var justPressed = Input.dash && !Dash.dashWasDown;
   Dash.dashWasDown = Input.dash;
   Dash.updateTrail();
@@ -91,7 +127,31 @@ Dash.update = function () {
     if (Input.right) { Dash.direction = 1; }
     Dash.distanceLeft = CONFIG.DASH_DISTANCE;
     Dash.sequence = Dash.sequence + 1;
-    Dash.state = "dashing";
+    Dash.stacks = Dash.stacks - 1;
+    if (Dash.stacks <= 0) {
+      Dash.stacks = 0;
+      Dash.regenMs = 1000;
+    }
+    Dash.dashCooldownMs = 10;
+    Player.invulnerable = true;
+    var dashStartX = Player.x;
+    var hit = Dash.move(Dash.direction * Dash.distanceLeft);
+    var dashEndX = Player.x;
+    Dash.line = {
+      startX: dashStartX + CONFIG.PLAYER_SIZE / 2,
+      endX: dashEndX + CONFIG.PLAYER_SIZE / 2,
+      y: Player.y + CONFIG.PLAYER_SIZE / 2,
+      life: 18,
+      maxLife: 18
+    };
+    Dash.spawnTrail();
+    Enemies.damageFromDash(dashStartX, dashEndX);
+    Dash.distanceLeft = 0;
+    Dash.state = "ready";
+    Dash.cooldown = 0;
+    if (hit) {
+      Dash.state = "ready";
+    }
   }
 
   if (Dash.state === "dashing") {
