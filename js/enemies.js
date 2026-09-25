@@ -3,6 +3,14 @@ var Enemies = {
   projectiles: []
 };
 
+Enemies.damageForLevel = function (baseDamage) {
+  return baseDamage + Math.max(0, Game.levelNumber) * CONFIG.ENEMY_DAMAGE_PER_LEVEL;
+};
+
+Enemies.speedMultiplier = function () {
+  return 1 + Math.max(0, Game.levelNumber) * CONFIG.ENEMY_SPEED_PER_LEVEL;
+};
+
 Enemies.reset = function () {
   Enemies.list = [];
   Enemies.projectiles = [];
@@ -69,7 +77,7 @@ Enemies.update = function () {
       }
       if (Math.abs(dx) < 260 && Math.abs(dy) < 80 && enemy.cooldown <= 0) {
         enemy.cooldown = CONFIG.RANGED_ATTACK_COOLDOWN;
-        var projectileSpeed = 4;
+        var projectileSpeed = 4 * Enemies.speedMultiplier();
         var shotDistance = Math.sqrt(dx * dx + dy * dy);
         var shotDx = shotDistance > 0 ? dx / shotDistance : enemy.dir;
         var shotDy = shotDistance > 0 ? dy / shotDistance : 0;
@@ -80,7 +88,7 @@ Enemies.update = function () {
           vy: shotDy * projectileSpeed,
           radius: 5,
           life: 90,
-          damage: 10
+          damage: Enemies.damageForLevel(10)
         });
       }
       continue;
@@ -122,7 +130,7 @@ Enemies.update = function () {
 
 Enemies.updateMeleeDash = function (enemy) {
   var dashStartX = enemy.x;
-  var dashStep = Math.min(CONFIG.MELEE_DASH_SPEED, enemy.dashDistanceLeft);
+  var dashStep = Math.min(CONFIG.MELEE_DASH_SPEED * Enemies.speedMultiplier(), enemy.dashDistanceLeft);
   var nextX = enemy.x + enemy.dashDirection * dashStep;
   var enemySize = 24;
   var enemyLeft = nextX - enemySize / 2;
@@ -143,7 +151,7 @@ Enemies.followPlayer = function (enemy, dx) {
   if (Math.abs(dx) <= 8) { return; }
 
   enemy.dir = dx > 0 ? 1 : -1;
-  var nextX = enemy.x + enemy.dir * CONFIG.ENEMY_MOVE_SPEED;
+  var nextX = enemy.x + enemy.dir * CONFIG.ENEMY_MOVE_SPEED * Enemies.speedMultiplier();
   var enemySize = 24;
   var enemyLeft = nextX - enemySize / 2;
   var enemyTop = enemy.y - enemySize / 2;
@@ -191,7 +199,7 @@ Enemies.damagePlayerFromDash = function (enemy, dashStartX, dashEndX) {
 
   if (dashRight > playerLeft && dashLeft < playerRight &&
       enemy.y + 16 > playerTop && enemy.y - 16 < playerBottom) {
-    Player.takeDamage(20);
+    Player.takeDamage(Enemies.damageForLevel(20));
     enemy.dashHit = true;
   }
 };
