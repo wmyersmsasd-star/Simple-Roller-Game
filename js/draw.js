@@ -152,6 +152,14 @@ Draw.player = function () {
   ctx.fill();
   ctx.stroke();
 
+  if (Player.isBlocking()) {
+    ctx.strokeStyle = "#8deeff";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, r + 5, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
   // the off-center dot. its position depends on how far we have rolled.
   var dotX = centerX + Math.cos(Player.angle) * r * CONFIG.DOT_DISTANCE;
   var dotY = centerY + Math.sin(Player.angle) * r * CONFIG.DOT_DISTANCE;

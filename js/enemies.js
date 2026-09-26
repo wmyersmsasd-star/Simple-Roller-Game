@@ -32,6 +32,7 @@ Enemies.loadFromLevel = function () {
         dashDirection: 1,
         dashHit: false,
         lastPlayerDash: 0,
+        stunFrames: 0,
         health: CONFIG.ENEMY_MAX_HEALTH,
         minX: col * CONFIG.TILE + 8,
         maxX: (col + 1) * CONFIG.TILE - 8,
@@ -69,6 +70,10 @@ Enemies.update = function () {
     if (enemy.health <= 0) {
       continue;
     }
+    if (enemy.stunFrames > 0) {
+      enemy.stunFrames = enemy.stunFrames - 1;
+      continue;
+    }
 
     if (enemy.type === "ranged") {
       enemy.cooldown = enemy.cooldown - 1;
@@ -88,7 +93,8 @@ Enemies.update = function () {
           vy: shotDy * projectileSpeed,
           radius: 5,
           life: 90,
-          damage: Enemies.damageForLevel(10)
+          damage: Enemies.damageForLevel(10),
+          owner: enemy
         });
       }
       continue;
@@ -179,7 +185,7 @@ Enemies.applyPlayerDamage = function () {
 
     if (shotRight > playerLeft && shotLeft < playerRight &&
         shotBottom > playerTop && shotTop < playerBottom) {
-      Player.takeDamage(shot.damage || 10);
+      Player.takeDamage(shot.damage || 10, shot.owner);
       Enemies.projectiles.splice(i, 1);
       i = i - 1;
     }
@@ -199,9 +205,16 @@ Enemies.damagePlayerFromDash = function (enemy, dashStartX, dashEndX) {
 
   if (dashRight > playerLeft && dashLeft < playerRight &&
       enemy.y + 16 > playerTop && enemy.y - 16 < playerBottom) {
-    Player.takeDamage(Enemies.damageForLevel(20));
+    Player.takeDamage(Enemies.damageForLevel(20), enemy);
     enemy.dashHit = true;
   }
+};
+
+Enemies.stun = function (enemy) {
+  if (!enemy || enemy.health <= 0) { return; }
+  enemy.stunFrames = CONFIG.ENEMY_STUN_FRAMES;
+  enemy.dashDistanceLeft = 0;
+  enemy.cooldown = Math.max(enemy.cooldown, CONFIG.MELEE_ATTACK_COOLDOWN);
 };
 
 Enemies.damageFromDash = function (dashStartX, dashEndX) {
@@ -290,6 +303,11 @@ Enemies.draw = function () {
       ctx.strokeStyle = "#ffc9b0";
       ctx.lineWidth = 2;
       ctx.strokeRect(centerX - 12, centerY - 12, 24, 24);
+    }
+    if (enemy.stunFrames > 0) {
+      ctx.strokeStyle = "#8deeff";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(centerX - 15, centerY - 15, 30, 30);
     }
   }
 };

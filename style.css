@@ -47,6 +47,13 @@ canvas {
   font-size: 13px;
 }
 
+#block-status {
+  min-height: 20px;
+  margin-top: 2px;
+  color: #8deeff;
+  font-size: 13px;
+}
+
 .controls {
   font-size: 13px;
   margin-top: 8px;

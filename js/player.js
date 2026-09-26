@@ -18,10 +18,18 @@ var Player = {
   coyoteFrames: 0,
   angle: 0,        // how far the circle has rolled, for drawing the dot
   health: 100,     // current health; no regeneration
-  invulnerable: false
+  invulnerable: false,
+  blockFrames: 0,
+  blockCooldownFrames: 0,
+  blockWasDown: false
 };
 
-Player.takeDamage = function (amount) {
+Player.takeDamage = function (amount, attacker) {
+  if (Player.isBlocking()) {
+    Enemies.stun(attacker);
+    Effects.hitBurst(Player.x + CONFIG.PLAYER_SIZE / 2, Player.y + CONFIG.PLAYER_SIZE / 2, "rgba(141, 238, 255, 1)");
+    return;
+  }
   if (Player.invulnerable || Dash.isMoving()) { return; }
 
   Player.health = Math.max(0, Player.health - amount);
@@ -34,10 +42,36 @@ Player.takeDamage = function (amount) {
   Player.updateHud();
 };
 
+Player.isBlocking = function () {
+  return Player.blockFrames > 0;
+};
+
+Player.updateBlock = function () {
+  if (Player.blockFrames > 0) { Player.blockFrames = Player.blockFrames - 1; }
+  if (Player.blockCooldownFrames > 0) { Player.blockCooldownFrames = Player.blockCooldownFrames - 1; }
+
+  var blockPressed = Input.block && !Player.blockWasDown;
+  Player.blockWasDown = Input.block;
+  if (blockPressed && Player.blockCooldownFrames <= 0) {
+    Player.blockFrames = CONFIG.BLOCK_DURATION_FRAMES;
+    Player.blockCooldownFrames = CONFIG.BLOCK_COOLDOWN_FRAMES;
+  }
+};
+
 Player.updateHud = function () {
   var hud = document.getElementById("hud");
   if (hud) {
     hud.textContent = "Health: " + Player.health + " / " + CONFIG.PLAYER_MAX_HEALTH;
+  }
+  var blockStatus = document.getElementById("block-status");
+  if (blockStatus) {
+    if (Player.isBlocking()) {
+      blockStatus.textContent = "Block: active";
+    } else if (Player.blockCooldownFrames > 0) {
+      blockStatus.textContent = "Block: " + (Player.blockCooldownFrames / 60).toFixed(1) + "s cooldown";
+    } else {
+      blockStatus.textContent = "Block: ready (F)";
+    }
   }
 };
 
@@ -54,6 +88,9 @@ Player.reset = function () {
   Player.angle = 0;
   Player.health = CONFIG.PLAYER_MAX_HEALTH;
   Player.invulnerable = false;
+  Player.blockFrames = 0;
+  Player.blockCooldownFrames = 0;
+  Player.blockWasDown = Input.block;
   Player.updateHud();
   Dash.reset();
 };
@@ -61,6 +98,7 @@ Player.reset = function () {
 // Run one frame of player movement.
 Player.update = function () {
   var size = CONFIG.PLAYER_SIZE;
+  Player.updateBlock();
   var jumpPressed = Input.jump && !Player.jumpWasDown;
   Player.jumpWasDown = Input.jump;
 
