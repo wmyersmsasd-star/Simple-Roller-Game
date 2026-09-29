@@ -234,9 +234,9 @@ Enemies.damageFromDash = function (dashStartX, dashEndX) {
 
     if (dashRight > enemyLeft && dashLeft < enemyRight &&
       playerBottom > enemyTop && playerTop < enemyBottom) {
-      enemy.health = enemy.health - 30;
+      enemy.health = enemy.health - 50;
       enemy.lastPlayerDash = Dash.sequence;
-      Effects.damageNumber(enemy.x, enemy.y - 18, 30, "rgba(122, 240, 255, 1)");
+      Effects.damageNumber(enemy.x, enemy.y - 18, 50, "rgba(122, 240, 255, 1)");
       Effects.hitBurst(enemy.x, enemy.y, "rgba(122, 240, 255, 1)");
       if (enemy.health <= 0) {
         enemy.health = 0;
