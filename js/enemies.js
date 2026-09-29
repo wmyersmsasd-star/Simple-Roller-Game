@@ -234,12 +234,14 @@ Enemies.damageFromDash = function (dashStartX, dashEndX) {
 
     if (dashRight > enemyLeft && dashLeft < enemyRight &&
       playerBottom > enemyTop && playerTop < enemyBottom) {
-      enemy.health = enemy.health - 50;
+      var dashDamage = Player.getDamageAmount(50);
+      enemy.health = enemy.health - dashDamage;
       enemy.lastPlayerDash = Dash.sequence;
-      Effects.damageNumber(enemy.x, enemy.y - 18, 50, "rgba(122, 240, 255, 1)");
+      Effects.damageNumber(enemy.x, enemy.y - 18, dashDamage, "rgba(122, 240, 255, 1)");
       Effects.hitBurst(enemy.x, enemy.y, "rgba(122, 240, 255, 1)");
       if (enemy.health <= 0) {
         enemy.health = 0;
+        Game.addCoins(Game.getCoinReward());
       }
     }
   }
@@ -259,6 +261,9 @@ Enemies.damageFromBeam = function (centerX, width, damage) {
     enemy.health = Math.max(0, enemy.health - damage);
     Effects.damageNumber(enemy.x, enemy.y - 18, damage, "rgba(122, 240, 255, 1)");
     Effects.hitBurst(enemy.x, enemy.y, "rgba(122, 240, 255, 1)");
+    if (enemy.health <= 0) {
+      Game.addCoins(Game.getCoinReward());
+    }
   }
 };
 

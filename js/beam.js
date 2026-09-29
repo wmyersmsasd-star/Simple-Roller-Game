@@ -59,7 +59,7 @@ SkyBeam.handleClick = function (event) {
     lifeMs: CONFIG.BEAM_EFFECT_MS,
     maxLifeMs: CONFIG.BEAM_EFFECT_MS
   };
-  Enemies.damageFromBeam(SkyBeam.aimX, beamWidth, CONFIG.BEAM_DAMAGE);
+  Enemies.damageFromBeam(SkyBeam.aimX, beamWidth, Player.getDamageAmount(CONFIG.BEAM_DAMAGE));
   SkyBeam.updateStatus();
 };
 

@@ -12,9 +12,19 @@
   <canvas id="game" width="800" height="400"></canvas>
 
   <p id="message">Loading...</p>
-  <div id="hud">Health: 100 / 100</div>
+  <div class="hud-row">
+    <div id="hud">Health: 100 / 100</div>
+    <div id="coin-hud">Coins: 0</div>
+    <button id="shop-button" type="button">Shop</button>
+  </div>
   <div id="ability-status">Sky beam: ready</div>
   <div id="block-status">Block: ready (F)</div>
+
+  <div id="shop-panel" hidden>
+    <button id="damage-upgrade" type="button">Upgrade Damage (50 coins)</button>
+    <button id="health-upgrade" type="button">Upgrade Health (50 coins)</button>
+    <button id="leave-shop" type="button">Leave Shop</button>
+  </div>
 
   <p class="controls">
     LEFT / RIGHT arrow to roll &nbsp;&middot;&nbsp;

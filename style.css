@@ -31,13 +31,50 @@ canvas {
   margin-top: 16px;
 }
 
-#hud {
+.hud-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+#hud,
+#coin-hud {
   font-size: 16px;
   font-weight: bold;
   color: #eafcff;
-  margin: 8px 0 0;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+#shop-button,
+#damage-upgrade,
+#health-upgrade,
+#leave-shop {
+  background: #1b2542;
+  border: 2px solid #7af0ff;
+  color: #eafcff;
+  padding: 8px 14px;
+  font-family: monospace;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+#shop-button:hover,
+#damage-upgrade:hover,
+#health-upgrade:hover,
+#leave-shop:hover {
+  background: #273968;
+}
+
+#shop-panel {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 #ability-status {

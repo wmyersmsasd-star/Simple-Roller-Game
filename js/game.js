@@ -10,9 +10,12 @@
    ===================================================================== */
 
 var Game = {
-  mode: "playing",   // "playing", "dead", or "won"
+  mode: "playing",   // "playing", "dead", "won", or "shop"
   levelNumber: 0,
-  restartWasDown: false
+  restartWasDown: false,
+  coins: 0,
+  shopReturnX: 0,
+  shopReturnY: 0
 };
 
 Game.startLevel = function (levelNumber) {
@@ -25,6 +28,96 @@ Game.startLevel = function (levelNumber) {
   SkyBeam.reset();
   Game.mode = "playing";
   Game.showMessage("");
+  Game.updateShopUi();
+};
+
+Game.getCoinReward = function () {
+  return Math.round(10 * Math.pow(1.5, Math.max(0, Game.levelNumber)));
+};
+
+Game.addCoins = function (amount) {
+  Game.coins = Game.coins + Math.max(0, amount);
+  Player.updateHud();
+};
+
+Game.getDamageUpgradeCost = function () {
+  return Math.round(CONFIG.SHOP_INITIAL_COST * Math.pow(CONFIG.SHOP_COST_GROWTH, Player.damageUpgradeLevel));
+};
+
+Game.getHealthUpgradeCost = function () {
+  return Math.round(CONFIG.SHOP_INITIAL_COST * Math.pow(CONFIG.SHOP_COST_GROWTH, Player.healthUpgradeLevel));
+};
+
+Game.trySpendCoins = function (amount) {
+  if (Game.coins < amount) { return false; }
+  Game.coins = Game.coins - amount;
+  Player.updateHud();
+  return true;
+};
+
+Game.updateShopUi = function () {
+  var damageBtn = document.getElementById("damage-upgrade");
+  var healthBtn = document.getElementById("health-upgrade");
+  var shopButton = document.getElementById("shop-button");
+  var shopPanel = document.getElementById("shop-panel");
+
+  if (damageBtn) {
+    damageBtn.textContent = "Upgrade Damage (" + Game.getDamageUpgradeCost() + " coins)";
+    damageBtn.disabled = Game.coins < Game.getDamageUpgradeCost();
+  }
+  if (healthBtn) {
+    healthBtn.textContent = "Upgrade Health (" + Game.getHealthUpgradeCost() + " coins)";
+    healthBtn.disabled = Game.coins < Game.getHealthUpgradeCost();
+  }
+  if (shopButton) {
+    shopButton.textContent = Game.mode === "shop" ? "Back to Game" : "Shop";
+  }
+  if (shopPanel) {
+    shopPanel.hidden = Game.mode !== "shop";
+  }
+};
+
+Game.enterShop = function () {
+  Game.shopReturnX = Player.x;
+  Game.shopReturnY = Player.y;
+  Player.x = 120;
+  Player.y = 200;
+  Game.mode = "shop";
+  Game.updateShopUi();
+  Game.showMessage("Shop");
+};
+
+Game.leaveShop = function () {
+  Player.x = Game.shopReturnX;
+  Player.y = Game.shopReturnY;
+  Game.mode = "playing";
+  Game.updateShopUi();
+  Game.showMessage("");
+};
+
+Game.buyDamageUpgrade = function () {
+  var cost = Game.getDamageUpgradeCost();
+  if (!Game.trySpendCoins(cost)) {
+    Game.showMessage("Not enough coins for Damage upgrade.");
+    return;
+  }
+  Player.damageUpgradeLevel = Player.damageUpgradeLevel + 1;
+  Game.showMessage("Damage upgraded!");
+  Game.updateShopUi();
+};
+
+Game.buyHealthUpgrade = function () {
+  var cost = Game.getHealthUpgradeCost();
+  if (!Game.trySpendCoins(cost)) {
+    Game.showMessage("Not enough coins for Health upgrade.");
+    return;
+  }
+  Player.healthUpgradeLevel = Player.healthUpgradeLevel + 1;
+  Player.maxHealth = Player.getMaxHealth();
+  Player.health = Player.maxHealth;
+  Player.updateHud();
+  Game.showMessage("Health upgraded!");
+  Game.updateShopUi();
 };
 
 Game.showMessage = function (text) {
@@ -50,6 +143,8 @@ Game.update = function () {
     }
     return;
   }
+
+  if (Game.mode === "shop") { return; }
 
   // If we are not playing, nothing moves. We just wait for R.
   if (Game.mode !== "playing") { return; }

@@ -18,6 +18,9 @@ var Player = {
   coyoteFrames: 0,
   angle: 0,        // how far the circle has rolled, for drawing the dot
   health: 100,     // current health; no regeneration
+  maxHealth: CONFIG.PLAYER_MAX_HEALTH,
+  damageUpgradeLevel: 0,
+  healthUpgradeLevel: 0,
   invulnerable: false,
   blockFrames: 0,
   blockCooldownFrames: 0,
@@ -58,10 +61,31 @@ Player.updateBlock = function () {
   }
 };
 
+Player.getDamageMultiplier = function () {
+  return Math.pow(CONFIG.DAMAGE_UPGRADE_MULTIPLIER, Player.damageUpgradeLevel);
+};
+
+Player.getHealthMultiplier = function () {
+  return Math.pow(CONFIG.HEALTH_UPGRADE_MULTIPLIER, Player.healthUpgradeLevel);
+};
+
+Player.getMaxHealth = function () {
+  return Math.round(CONFIG.PLAYER_MAX_HEALTH * Player.getHealthMultiplier());
+};
+
+Player.getDamageAmount = function (baseDamage) {
+  return Math.round(baseDamage * Player.getDamageMultiplier());
+};
+
 Player.updateHud = function () {
   var hud = document.getElementById("hud");
   if (hud) {
-    hud.textContent = "Health: " + Player.health + " / " + CONFIG.PLAYER_MAX_HEALTH;
+    Player.maxHealth = Player.getMaxHealth();
+    hud.textContent = "Health: " + Player.health + " / " + Player.maxHealth;
+  }
+  var coinHud = document.getElementById("coin-hud");
+  if (coinHud) {
+    coinHud.textContent = "Coins: " + Game.coins;
   }
   var blockStatus = document.getElementById("block-status");
   if (blockStatus) {
@@ -86,7 +110,8 @@ Player.reset = function () {
   Player.jumpWasDown = false;
   Player.coyoteFrames = 0;
   Player.angle = 0;
-  Player.health = CONFIG.PLAYER_MAX_HEALTH;
+  Player.maxHealth = Player.getMaxHealth();
+  Player.health = Player.maxHealth;
   Player.invulnerable = false;
   Player.blockFrames = 0;
   Player.blockCooldownFrames = 0;
