@@ -40,7 +40,7 @@ var CONFIG = {
    START_LEVEL: 0,          // which level in data/levels.json to load first
    DASH_DISTANCE: 160,      // four 40-pixel blocks
    DASH_SPEED: 8,
-   DASH_DURATION_MS: 10,
+   DASH_DURATION_MS: 100,
    BEAM_WIDTH_BLOCKS: 2,
    BEAM_DAMAGE: 35,
    BEAM_COOLDOWN_MS: 5000,

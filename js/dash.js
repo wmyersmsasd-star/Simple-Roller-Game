@@ -7,8 +7,8 @@ var Dash = {
   sequence: 0,
   trail: [],
   line: null,
-  maxStacks: 6,
-  stacks: 6,
+  maxStacks: 10,
+  stacks: 10,
   dashCooldownMs: 0,
   regenMs: 0,
   durationMs: 0,
@@ -31,8 +31,8 @@ Dash.reset = function () {
   Dash.sequence = 0;
   Dash.trail = [];
   Dash.line = null;
-  Dash.maxStacks = 6;
-  Dash.stacks = 6;
+  Dash.maxStacks = 10;
+  Dash.stacks = 10;
   Dash.dashCooldownMs = 0;
   Dash.regenMs = 0;
   Dash.durationMs = 0;
@@ -140,7 +140,7 @@ Dash.update = function () {
     Dash.stacks = Dash.stacks - 1;
     if (Dash.stacks <= 0) {
       Dash.stacks = 0;
-      Dash.regenMs = 1000;
+      Dash.regenMs = 2000;
     }
     Dash.dashCooldownMs = CONFIG.DASH_DURATION_MS;
     Dash.durationMs = CONFIG.DASH_DURATION_MS;
