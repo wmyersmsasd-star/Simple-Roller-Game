@@ -159,10 +159,11 @@ Dash.update = function () {
     Dash.spawnTrail();
     Enemies.damageFromDash(dashStartX, dashEndX);
     Dash.distanceLeft = 0;
-    Dash.state = "ready";
-    Dash.cooldown = 0;
+    Dash.state = "cooldown";
+    Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
     if (hit) {
-      Dash.state = "ready";
+      Dash.state = "cooldown";
+      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
     }
   }
 
