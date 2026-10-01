@@ -17,12 +17,149 @@ h1 {
   margin-bottom: 16px;
 }
 
+body.home-active {
+  overflow: hidden;
+}
+
 canvas {
   border: 3px solid #ff4fd8;
   background: #090d18;
   display: block;
   margin: 0 auto;
   box-shadow: 0 0 20px rgba(255, 79, 216, 0.35);
+}
+
+#home-screen {
+  display: none;
+}
+
+body.home-active #game {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border: 0;
+  object-fit: cover;
+  box-shadow: none;
+}
+
+body.home-active #home-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 40px 8vw;
+  background:
+    linear-gradient(105deg, rgba(5, 8, 15, 0.9) 0%, rgba(5, 8, 15, 0.66) 48%, rgba(5, 8, 15, 0.34) 100%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(141, 238, 255, 0.08) 40px);
+  text-align: left;
+}
+
+.home-content {
+  width: min(720px, 100%);
+  margin-left: 2vw;
+  padding-left: 28px;
+  border-left: 4px solid #ff4fd8;
+  animation: home-arrive 650ms ease-out both;
+}
+
+.home-kicker {
+  margin: 0 0 18px;
+  color: #8deeff;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.home-title {
+  margin: 0 0 32px;
+  color: #f4f8ff;
+  font-size: 80px;
+  line-height: 0.95;
+  text-align: left;
+  text-shadow: 7px 7px 0 rgba(255, 79, 216, 0.8);
+}
+
+#start-button {
+  min-width: 190px;
+  min-height: 52px;
+  padding: 12px 20px;
+  border: 2px solid #8deeff;
+  background: #12313a;
+  color: #f4f8ff;
+  font: bold 16px monospace;
+  cursor: pointer;
+  transition: background-color 140ms ease, transform 140ms ease;
+}
+
+#start-button:hover:not(:disabled) {
+  background: #1d4a54;
+  transform: translateY(-2px);
+}
+
+#start-button:focus-visible {
+  outline: 3px solid #ff4fd8;
+  outline-offset: 4px;
+}
+
+#start-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+#home-status {
+  min-height: 18px;
+  margin: 14px 0 0;
+  color: #c0d5e2;
+  font-size: 12px;
+}
+
+.home-stamp {
+  position: absolute;
+  right: 32px;
+  bottom: 22px;
+  margin: 0;
+  color: #d7edf2;
+  font-size: 12px;
+}
+
+@keyframes home-arrive {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 560px) {
+  body.home-active #home-screen {
+    padding: 24px;
+  }
+
+  .home-content {
+    margin-left: 0;
+    padding-left: 18px;
+  }
+
+  .home-title {
+    font-size: 52px;
+  }
+
+  .home-stamp {
+    right: 20px;
+    bottom: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-content {
+    animation: none;
+  }
+
+  #start-button {
+    transition: none;
+  }
 }
 
 #message {

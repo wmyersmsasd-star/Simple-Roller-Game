@@ -6,8 +6,16 @@
   <title>ROLLER</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<h1>ROLLER</h1>
+<body class="home-active">
+  <main id="home-screen" aria-labelledby="home-title">
+    <div class="home-content">
+      <p class="home-kicker">ARCADE / RUN 01</p>
+      <h1 id="home-title" class="home-title">ROLLER</h1>
+      <button id="start-button" type="button" disabled>Loading...</button>
+      <p id="home-status" role="status">Preparing level data</p>
+    </div>
+    <p class="home-stamp" aria-hidden="true">ROLLER / 01</p>
+  </main>
 
   <canvas id="game" width="800" height="400"></canvas>
 

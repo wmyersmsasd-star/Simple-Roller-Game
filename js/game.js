@@ -10,7 +10,7 @@
    ===================================================================== */
 
 var Game = {
-  mode: "playing",   // "playing", "dead", or "won"
+  mode: "playing",   // "title", "playing", "dead", or "won"
   levelNumber: 0,
   restartWasDown: false,
   coins: 0
@@ -98,6 +98,10 @@ Game.showMessage = function (text) {
 
 // --- ONE FRAME --------------------------------------------------------
 Game.update = function () {
+  if (Game.mode === "title") {
+    Game.restartWasDown = Input.restart;
+    return;
+  }
 
   var restartPressed = Input.restart && !Game.restartWasDown;
   Game.restartWasDown = Input.restart;
