@@ -13,7 +13,12 @@
 
   <p id="message">Loading...</p>
   <div class="hud-row">
-    <div id="hud">Health: 100 / 100</div>
+    <div class="health-display">
+      <div id="hud">Health: 100 / 100</div>
+      <div id="player-health-bar" role="progressbar" aria-label="Player health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+        <div id="player-health-fill"></div>
+      </div>
+    </div>
     <div id="coin-hud">Coins: 0</div>
   </div>
   <div id="ability-status">Sky beam: ready</div>

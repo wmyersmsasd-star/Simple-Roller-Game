@@ -83,6 +83,16 @@ Player.updateHud = function () {
     Player.maxHealth = Player.getMaxHealth();
     hud.textContent = "Health: " + Player.health + " / " + Player.maxHealth;
   }
+  var healthBar = document.getElementById("player-health-bar");
+  var healthFill = document.getElementById("player-health-fill");
+  var healthPercent = Player.maxHealth > 0 ? Math.max(0, Math.min(100, Player.health / Player.maxHealth * 100)) : 0;
+  if (healthBar) {
+    healthBar.setAttribute("aria-valuemax", Player.maxHealth);
+    healthBar.setAttribute("aria-valuenow", Player.health);
+  }
+  if (healthFill) {
+    healthFill.style.width = healthPercent + "%";
+  }
   var coinHud = document.getElementById("coin-hud");
   if (coinHud) {
     coinHud.textContent = "Coins: " + Game.coins;

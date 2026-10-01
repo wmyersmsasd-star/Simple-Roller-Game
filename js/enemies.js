@@ -314,5 +314,16 @@ Enemies.draw = function () {
       ctx.lineWidth = 3;
       ctx.strokeRect(centerX - 15, centerY - 15, 30, 30);
     }
+
+    var healthRatio = Math.max(0, Math.min(1, enemy.health / CONFIG.ENEMY_MAX_HEALTH));
+    var healthBarX = centerX - 17;
+    var healthBarY = centerY - 22;
+    ctx.fillStyle = "#101820";
+    ctx.fillRect(healthBarX, healthBarY, 34, 6);
+    ctx.fillStyle = healthRatio > 0.5 ? "#58d68d" : healthRatio > 0.25 ? "#f4c95d" : "#ff5b68";
+    ctx.fillRect(healthBarX + 1, healthBarY + 1, 32 * healthRatio, 4);
+    ctx.strokeStyle = "#eafcff";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(healthBarX, healthBarY, 34, 6);
   }
 };
