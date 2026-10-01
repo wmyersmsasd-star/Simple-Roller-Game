@@ -10,12 +10,10 @@
    ===================================================================== */
 
 var Game = {
-  mode: "playing",   // "playing", "dead", "won", or "shop"
+  mode: "playing",   // "playing", "dead", or "won"
   levelNumber: 0,
   restartWasDown: false,
-  coins: 0,
-  shopReturnX: 0,
-  shopReturnY: 0
+  coins: 0
 };
 
 Game.startLevel = function (levelNumber) {
@@ -58,8 +56,6 @@ Game.trySpendCoins = function (amount) {
 Game.updateShopUi = function () {
   var damageBtn = document.getElementById("damage-upgrade");
   var healthBtn = document.getElementById("health-upgrade");
-  var shopButton = document.getElementById("shop-button");
-  var shopPanel = document.getElementById("shop-panel");
 
   if (damageBtn) {
     damageBtn.textContent = "Upgrade Damage (" + Game.getDamageUpgradeCost() + " coins)";
@@ -69,30 +65,6 @@ Game.updateShopUi = function () {
     healthBtn.textContent = "Upgrade Health (" + Game.getHealthUpgradeCost() + " coins)";
     healthBtn.disabled = Game.coins < Game.getHealthUpgradeCost();
   }
-  if (shopButton) {
-    shopButton.textContent = Game.mode === "shop" ? "Back to Game" : "Shop";
-  }
-  if (shopPanel) {
-    shopPanel.hidden = Game.mode !== "shop";
-  }
-};
-
-Game.enterShop = function () {
-  Game.shopReturnX = Player.x;
-  Game.shopReturnY = Player.y;
-  Player.x = 120;
-  Player.y = 200;
-  Game.mode = "shop";
-  Game.updateShopUi();
-  Game.showMessage("Shop");
-};
-
-Game.leaveShop = function () {
-  Player.x = Game.shopReturnX;
-  Player.y = Game.shopReturnY;
-  Game.mode = "playing";
-  Game.updateShopUi();
-  Game.showMessage("");
 };
 
 Game.buyDamageUpgrade = function () {
@@ -143,8 +115,6 @@ Game.update = function () {
     }
     return;
   }
-
-  if (Game.mode === "shop") { return; }
 
   // If we are not playing, nothing moves. We just wait for R.
   if (Game.mode !== "playing") { return; }

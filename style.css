@@ -48,10 +48,8 @@ canvas {
   text-transform: uppercase;
 }
 
-#shop-button,
 #damage-upgrade,
-#health-upgrade,
-#leave-shop {
+#health-upgrade {
   background: #1b2542;
   border: 2px solid #7af0ff;
   color: #eafcff;
@@ -62,10 +60,8 @@ canvas {
   border-radius: 6px;
 }
 
-#shop-button:hover,
 #damage-upgrade:hover,
-#health-upgrade:hover,
-#leave-shop:hover {
+#health-upgrade:hover {
   background: #273968;
 }
 

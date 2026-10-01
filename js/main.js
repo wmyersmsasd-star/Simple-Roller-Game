@@ -11,16 +11,8 @@
 Draw.setup();
 SkyBeam.setup();
 
-document.getElementById("shop-button").addEventListener("click", function () {
-  if (Game.mode === "shop") {
-    Game.leaveShop();
-  } else {
-    Game.enterShop();
-  }
-});
 document.getElementById("damage-upgrade").addEventListener("click", Game.buyDamageUpgrade);
 document.getElementById("health-upgrade").addEventListener("click", Game.buyHealthUpgrade);
-document.getElementById("leave-shop").addEventListener("click", Game.leaveShop);
 
 Level.loadData(function () {
   Game.startLevel(CONFIG.START_LEVEL);

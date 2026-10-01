@@ -2,8 +2,6 @@ var Dash = {
   state: "ready",
   direction: 1,
   distanceLeft: 0,
-  dashWasDown: false,
-  cooldown: 0,
   sequence: 0,
   trail: [],
   line: null,
@@ -11,7 +9,6 @@ var Dash = {
   stacks: 10,
   dashCooldownMs: 0,
   regenMs: 0,
-  durationMs: 0,
   lastFrameTime: 0
 };
 
@@ -26,8 +23,6 @@ Dash.reset = function () {
   Dash.state = "ready";
   Dash.direction = 1;
   Dash.distanceLeft = 0;
-  Dash.dashWasDown = false;
-  Dash.cooldown = 0;
   Dash.sequence = 0;
   Dash.trail = [];
   Dash.line = null;
@@ -35,12 +30,11 @@ Dash.reset = function () {
   Dash.stacks = 10;
   Dash.dashCooldownMs = 0;
   Dash.regenMs = 0;
-  Dash.durationMs = 0;
   Dash.lastFrameTime = Dash.now();
 };
 
 Dash.canDash = function () {
-  return Dash.state === "ready" && Dash.cooldown <= 0 && Dash.dashCooldownMs <= 0 && Dash.durationMs <= 0 && Dash.stacks > 0 && (Input.left || Input.right);
+  return Dash.state === "ready" && Dash.dashCooldownMs <= 0 && Dash.stacks > 0 && (Input.left || Input.right);
 };
 
 Dash.spawnTrail = function (trailX, trailY) {
@@ -106,11 +100,7 @@ Dash.update = function () {
 
   if (Dash.dashCooldownMs > 0) {
     Dash.dashCooldownMs = Math.max(0, Dash.dashCooldownMs - deltaMs);
-  }
-
-  if (Dash.durationMs > 0) {
-    Dash.durationMs = Math.max(0, Dash.durationMs - deltaMs);
-    if (Dash.durationMs === 0) {
+    if (Dash.dashCooldownMs === 0 && Dash.state === "cooldown") {
       Dash.state = "ready";
     }
   }
@@ -123,16 +113,9 @@ Dash.update = function () {
   }
 
   var dashComboDown = Input.dash && (Input.left || Input.right);
-  var justPressed = dashComboDown && !Dash.dashWasDown;
-  Dash.dashWasDown = dashComboDown;
   Dash.updateTrail();
 
-  if (Dash.state === "cooldown") {
-    Dash.cooldown = Dash.cooldown - 1;
-    if (Dash.cooldown <= 0) { Dash.state = "ready"; }
-  }
-
-  if (Dash.state === "ready" && justPressed && Dash.canDash()) {
+  if (dashComboDown && Dash.canDash()) {
     if (Input.left) { Dash.direction = -1; }
     if (Input.right) { Dash.direction = 1; }
     Dash.distanceLeft = CONFIG.DASH_DISTANCE;
@@ -142,8 +125,7 @@ Dash.update = function () {
       Dash.stacks = 0;
       Dash.regenMs = 2000;
     }
-    Dash.dashCooldownMs = CONFIG.DASH_DURATION_MS;
-    Dash.durationMs = CONFIG.DASH_DURATION_MS;
+    Dash.dashCooldownMs = CONFIG.DASH_COOLDOWN_MS;
     Dash.state = "dashing";
     Player.invulnerable = true;
     var dashStartX = Player.x;
@@ -160,11 +142,6 @@ Dash.update = function () {
     Enemies.damageFromDash(dashStartX, dashEndX);
     Dash.distanceLeft = 0;
     Dash.state = "cooldown";
-    Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
-    if (hit) {
-      Dash.state = "cooldown";
-      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
-    }
   }
 
   if (Dash.state === "dashing") {
@@ -185,7 +162,7 @@ Dash.update = function () {
     Dash.distanceLeft = Dash.distanceLeft - dashStep;
     if (hit || Dash.distanceLeft <= 0) {
       Dash.state = "cooldown";
-      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
+      Dash.dashCooldownMs = CONFIG.DASH_COOLDOWN_MS;
     }
   } else if (Dash.state === "bouncing") {
     Dash.spawnTrail();
@@ -193,7 +170,7 @@ Dash.update = function () {
     Dash.distanceLeft = Dash.distanceLeft - CONFIG.BOUNCE_SPEED;
     if (Dash.distanceLeft <= 0) {
       Dash.state = "cooldown";
-      Dash.cooldown = CONFIG.DASH_COOLDOWN_FRAMES;
+      Dash.dashCooldownMs = CONFIG.DASH_COOLDOWN_MS;
     }
   }
 };
