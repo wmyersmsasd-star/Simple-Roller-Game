@@ -80,6 +80,14 @@ Dash.move = function (distance) {
 
   for (var i = 0; i < Math.abs(distance); i++) {
     if (Collide.hitsSolid(Player.x + step, Player.y, size, size)) {
+      var blockedSquares = Collide.squaresUnder(Player.x + step, Player.y, size, size);
+      for (var j = 0; j < blockedSquares.length; j++) {
+        var square = blockedSquares[j];
+        if (Level.isSolid(square.col, square.row)) {
+          Level.setTile(square.col, square.row, ".");
+          break;
+        }
+      }
       return true;
     }
     Player.x = Player.x + step;
