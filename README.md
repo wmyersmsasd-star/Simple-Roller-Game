@@ -18,6 +18,10 @@ Press `Ctrl + Shift + R` to hard refresh, or you will see the old version.
 - Z, then click the level - fire a two-block-wide beam for 20 damage (5-second cooldown)
 - R - restart the level, or continue after clearing it
 
+Enemies move at five times their former base speed, jump over terrain hazards,
+and react to incoming shots. Movement, jumps, attacks, landings, and stuns each
+have distinct animations.
+
 ## Where everything lives
 
 | If you want to change... | Open this file |
