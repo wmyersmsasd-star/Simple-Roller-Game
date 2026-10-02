@@ -1,10 +1,13 @@
 var Enemies = {
   list: [],
-  projectiles: []
+  projectiles: [],
+  shockwaves: []
 };
 
 Enemies.damageForLevel = function (baseDamage) {
-  return baseDamage + Math.max(0, Game.levelNumber) * CONFIG.ENEMY_DAMAGE_PER_LEVEL;
+  var levelIndex = Level.campaignStage >= 0 ? 10 + Level.campaignStage : Math.max(0, Game.levelNumber);
+  var stageIncrease = levelIndex * CONFIG.ENEMY_DAMAGE_PER_LEVEL;
+  return Math.round((baseDamage + stageIncrease) * Math.sqrt(Level.difficultyMultiplier));
 };
 
 Enemies.speedMultiplier = function () {
@@ -14,16 +17,17 @@ Enemies.speedMultiplier = function () {
 Enemies.reset = function () {
   Enemies.list = [];
   Enemies.projectiles = [];
+  Enemies.shockwaves = [];
 };
 
 Enemies.loadFromLevel = function () {
   for (var row = 0; row < Level.grid.length; row++) {
     for (var col = 0; col < Level.grid[row].length; col++) {
       var tile = Level.charAt(col, row);
-      if (tile !== "R" && tile !== "M") { continue; }
+      if (tile !== "R" && tile !== "M" && tile !== "B") { continue; }
 
       var enemy = {
-        type: tile === "R" ? "ranged" : "melee",
+        type: tile === "R" ? "ranged" : tile === "B" ? "boss" : "melee",
         x: col * CONFIG.TILE + CONFIG.TILE / 2,
         y: row * CONFIG.TILE + CONFIG.TILE / 2,
         dir: 1,
@@ -33,7 +37,10 @@ Enemies.loadFromLevel = function () {
         dashHit: false,
         lastPlayerDash: 0,
         stunFrames: 0,
-        health: CONFIG.ENEMY_MAX_HEALTH,
+        health: Math.round(CONFIG.ENEMY_MAX_HEALTH * Level.difficultyMultiplier * (tile === "B" ? 5 : 1)),
+        size: tile === "B" ? 64 : 24,
+        bossName: tile === "B" ? Level.bossName : "",
+        shockwaveCooldown: 100,
         minX: col * CONFIG.TILE + 8,
         maxX: (col + 1) * CONFIG.TILE - 8,
         baseY: row * CONFIG.TILE + CONFIG.TILE / 2
@@ -62,6 +69,8 @@ Enemies.update = function () {
     return shot.life > 0;
   });
 
+  Enemies.updateShockwaves();
+
   for (var j = 0; j < Enemies.list.length; j++) {
     var enemy = Enemies.list[j];
     var dx = Player.x - enemy.x;
@@ -72,6 +81,16 @@ Enemies.update = function () {
     }
     if (enemy.stunFrames > 0) {
       enemy.stunFrames = enemy.stunFrames - 1;
+      continue;
+    }
+
+    if (enemy.type === "boss") {
+      enemy.shockwaveCooldown = enemy.shockwaveCooldown - 1;
+      if (enemy.shockwaveCooldown <= 0) {
+        enemy.shockwaveCooldown = Math.max(75, 150 - Level.realmStage * 4);
+        Enemies.createShockwave(enemy);
+      }
+      Enemies.followPlayer(enemy, dx);
       continue;
     }
 
@@ -129,9 +148,46 @@ Enemies.update = function () {
   });
 
   Enemies.applyPlayerDamage();
+  Enemies.shockwaves = Enemies.shockwaves.filter(function (wave) {
+    return wave.life > 0 && wave.owner.health > 0;
+  });
   Enemies.list = Enemies.list.filter(function (enemy) {
     return enemy.health > 0;
   });
+};
+
+Enemies.createShockwave = function (boss) {
+  var groundY = boss.baseY + CONFIG.TILE / 2;
+  var speed = 5 + Level.difficultyMultiplier;
+  Enemies.shockwaves.push({
+    x: boss.x,
+    y: groundY,
+    radius: 0,
+    speed: speed,
+    life: 90,
+    damage: Enemies.damageForLevel(14),
+    owner: boss,
+    hit: false
+  });
+};
+
+Enemies.updateShockwaves = function () {
+  var playerCenterX = Player.x + CONFIG.PLAYER_SIZE / 2;
+  var playerBottom = Player.y + CONFIG.PLAYER_SIZE;
+  for (var i = 0; i < Enemies.shockwaves.length; i++) {
+    var wave = Enemies.shockwaves[i];
+    var previousRadius = wave.radius;
+    wave.radius = wave.radius + wave.speed;
+    wave.life = wave.life - 1;
+    var distance = Math.abs(playerCenterX - wave.x);
+    var wavePassedPlayer = distance >= previousRadius && distance <= wave.radius + 14;
+    var playerAtGround = Math.abs(playerBottom - wave.y) < 38;
+
+    if (!wave.hit && wavePassedPlayer && playerAtGround) {
+      Player.takeDamage(wave.damage, wave.owner);
+      wave.hit = true;
+    }
+  }
 };
 
 Enemies.updateMeleeDash = function (enemy) {
@@ -158,7 +214,7 @@ Enemies.followPlayer = function (enemy, dx) {
 
   enemy.dir = dx > 0 ? 1 : -1;
   var nextX = enemy.x + enemy.dir * CONFIG.ENEMY_MOVE_SPEED * Enemies.speedMultiplier();
-  var enemySize = 24;
+  var enemySize = enemy.size || 24;
   var enemyLeft = nextX - enemySize / 2;
   var enemyTop = enemy.y - enemySize / 2;
 
@@ -214,6 +270,9 @@ Enemies.stun = function (enemy) {
   if (!enemy || enemy.health <= 0) { return; }
   enemy.stunFrames = CONFIG.ENEMY_STUN_FRAMES;
   enemy.dashDistanceLeft = 0;
+  if (enemy.type === "boss") {
+    enemy.shockwaveCooldown = Math.max(enemy.shockwaveCooldown, 120);
+  }
   enemy.cooldown = Math.max(enemy.cooldown, CONFIG.MELEE_ATTACK_COOLDOWN);
 };
 
@@ -227,10 +286,11 @@ Enemies.damageFromDash = function (dashStartX, dashEndX) {
     var enemy = Enemies.list[i];
     if (enemy.health <= 0 || enemy.lastPlayerDash === Dash.sequence) { continue; }
 
-    var enemyLeft = enemy.x - 16;
-    var enemyRight = enemy.x + 16;
-    var enemyTop = enemy.y - 16;
-    var enemyBottom = enemy.y + 16;
+    var enemyHalfSize = (enemy.size || 24) / 2;
+    var enemyLeft = enemy.x - enemyHalfSize;
+    var enemyRight = enemy.x + enemyHalfSize;
+    var enemyTop = enemy.y - enemyHalfSize;
+    var enemyBottom = enemy.y + enemyHalfSize;
 
     if (dashRight > enemyLeft && dashLeft < enemyRight &&
       playerBottom > enemyTop && playerTop < enemyBottom) {
@@ -253,8 +313,9 @@ Enemies.damageFromBeam = function (centerX, width, damage) {
 
   for (var i = 0; i < Enemies.list.length; i++) {
     var enemy = Enemies.list[i];
-    var enemyLeft = enemy.x - 16;
-    var enemyRight = enemy.x + 16;
+    var enemyHalfSize = (enemy.size || 24) / 2;
+    var enemyLeft = enemy.x - enemyHalfSize;
+    var enemyRight = enemy.x + enemyHalfSize;
 
     if (enemy.health <= 0 || beamRight <= enemyLeft || beamLeft >= enemyRight) { continue; }
 
@@ -274,6 +335,15 @@ Enemies.hitsPlayer = function () {
 Enemies.draw = function () {
   var ctx = Draw.ctx;
 
+  for (var waveIndex = 0; waveIndex < Enemies.shockwaves.length; waveIndex++) {
+    var wave = Enemies.shockwaves[waveIndex];
+    ctx.strokeStyle = "rgba(255, 211, 91, " + Math.min(0.9, wave.life / 45) + ")";
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
   for (var i = 0; i < Enemies.projectiles.length; i++) {
     var shot = Enemies.projectiles[i];
     ctx.fillStyle = Level.colors.projectile;
@@ -287,7 +357,37 @@ Enemies.draw = function () {
     var centerX = enemy.x;
     var centerY = enemy.y;
 
-    if (enemy.type === "ranged") {
+    if (enemy.type === "boss") {
+      ctx.fillStyle = Level.colors.melee;
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, 31, 29, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = Level.colors.outline;
+      ctx.beginPath();
+      ctx.moveTo(centerX - 22, centerY - 18);
+      ctx.lineTo(centerX - 34, centerY - 38);
+      ctx.lineTo(centerX - 8, centerY - 25);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(centerX + 22, centerY - 18);
+      ctx.lineTo(centerX + 34, centerY - 38);
+      ctx.lineTo(centerX + 8, centerY - 25);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#fff1c2";
+      ctx.fillRect(centerX - 15, centerY - 8, 8, 6);
+      ctx.fillRect(centerX + 7, centerY - 8, 8, 6);
+      ctx.strokeStyle = "#fff0c2";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, 31, 29, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = "#fff1c2";
+      ctx.font = "bold 12px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(enemy.bossName, centerX, centerY - 49);
+    } else if (enemy.type === "ranged") {
       ctx.fillStyle = Level.colors.ranged;
       ctx.fillRect(centerX - 12, centerY - 12, 24, 24);
       ctx.fillStyle = "#0d1c2b";
@@ -315,15 +415,16 @@ Enemies.draw = function () {
       ctx.strokeRect(centerX - 15, centerY - 15, 30, 30);
     }
 
-    var healthRatio = Math.max(0, Math.min(1, enemy.health / CONFIG.ENEMY_MAX_HEALTH));
-    var healthBarX = centerX - 17;
-    var healthBarY = centerY - 22;
+    var healthRatio = Math.max(0, Math.min(1, enemy.health / (CONFIG.ENEMY_MAX_HEALTH * Level.difficultyMultiplier * (enemy.type === "boss" ? 5 : 1))));
+    var healthBarWidth = enemy.type === "boss" ? 68 : 34;
+    var healthBarX = centerX - healthBarWidth / 2;
+    var healthBarY = centerY - (enemy.type === "boss" ? 43 : 22);
     ctx.fillStyle = "#101820";
-    ctx.fillRect(healthBarX, healthBarY, 34, 6);
+    ctx.fillRect(healthBarX, healthBarY, healthBarWidth, 6);
     ctx.fillStyle = healthRatio > 0.5 ? "#58d68d" : healthRatio > 0.25 ? "#f4c95d" : "#ff5b68";
-    ctx.fillRect(healthBarX + 1, healthBarY + 1, 32 * healthRatio, 4);
+    ctx.fillRect(healthBarX + 1, healthBarY + 1, (healthBarWidth - 2) * healthRatio, 4);
     ctx.strokeStyle = "#eafcff";
     ctx.lineWidth = 1;
-    ctx.strokeRect(healthBarX, healthBarY, 34, 6);
+    ctx.strokeRect(healthBarX, healthBarY, healthBarWidth, 6);
   }
 };

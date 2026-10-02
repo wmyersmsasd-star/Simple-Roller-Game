@@ -12,10 +12,15 @@
 var Level = {
   pieces: null,     // every piece picture, loaded from pieces.json
   levels: null,     // every level list, loaded from levels.json
+  realms: null,
   grid: [],         // the finished world. grid[row][col] is one character
   cols: 0,          // how many columns wide the finished world is
   name: "",
   colors: null,
+  biome: "",
+  realmStage: 0,
+  campaignStage: -1,
+  bossName: "",
   startX: 0,        // where the player begins, in pixels
   startY: 0
 };
@@ -31,6 +36,8 @@ Level.loadData = function (whenDone) {
     .then(function (r) { return r.json(); })
     .then(function (levelsFile) {
       Level.levels = levelsFile.levels;
+      Level.realms = levelsFile.realms || [];
+      Level.appendRealmLevels();
       whenDone();
     })
     .catch(function (error) {
@@ -42,10 +49,43 @@ Level.loadData = function (whenDone) {
     });
 };
 
+Level.appendRealmLevels = function () {
+  for (var realmIndex = 0; realmIndex < Level.realms.length; realmIndex++) {
+    var realm = Level.realms[realmIndex];
+    for (var stage = 1; stage <= 15; stage++) {
+      var pieces = ["start"];
+      var segmentCount = 4 + Math.floor((stage - 1) / 3);
+
+      for (var segment = 0; segment < segmentCount; segment++) {
+        var courseIndex = (stage * 3 + segment + realmIndex) % realm.course.length;
+        pieces.push(realm.course[courseIndex]);
+      }
+
+      if (stage === 15) { pieces.push("boss"); }
+      pieces.push("finish");
+      Level.levels.push({
+        name: realm.name + " - Level " + stage + "/15",
+        pieces: pieces,
+        colors: realm.colors,
+        biome: realm.name,
+        realmStage: stage,
+        campaignStage: realmIndex * 15 + stage - 1,
+        difficultyMultiplier: Math.pow(5, (realmIndex * 15 + stage - 1) / 74),
+        bossName: stage === 15 ? realm.boss : ""
+      });
+    }
+  }
+};
+
 // --- STEP 2: glue the pieces together ---------------------------------
 Level.build = function (levelNumber) {
   var level = Level.levels[levelNumber];
   Level.name = level.name;
+  Level.biome = level.biome || "";
+  Level.realmStage = level.realmStage || 0;
+  Level.campaignStage = level.campaignStage === undefined ? -1 : level.campaignStage;
+  Level.difficultyMultiplier = level.difficultyMultiplier || 1;
+  Level.bossName = level.bossName || "";
   Level.colors = level.colors || {
     background: "#090d18",
     block: "#0b1220",

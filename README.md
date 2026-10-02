@@ -66,6 +66,12 @@ To make a new level: change the list of names.
 To make a new piece: copy one, rename it, redraw the picture, then use
 that name in a level.
 
+After the first ten levels, five biome realms follow: Jungle, Mountain,
+Desert, Ocean, and Volcano. Each realm contains 15 generated levels, with
+a large boss and expanding shockwave in its final level. Difficulty rises
+continuously through the 75 realm levels, reaching five times its starting
+multiplier in the Volcano finale. Jump over shockwaves to avoid them.
+
 ## Things to know before you change anything
 
 - The player is a **box** for collisions and a **circle** for drawing.

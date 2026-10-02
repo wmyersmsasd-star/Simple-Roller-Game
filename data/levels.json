@@ -1,5 +1,5 @@
 {
-  "_comment": "A level is just a list of piece names in order, left to right. Every name you use here must exist in data/pieces.json. Add, remove, or reorder pieces to build a new level. Every level should start with 'start' and end with 'finish'.",
+  "_comment": "The first ten levels are standalone. Each realm below generates 15 levels; its final level contains that realm's boss. Piece names must exist in data/pieces.json.",
 
   "levels": [
     {
@@ -100,24 +100,38 @@
         "hazard": "#facc15", "finish": "#fde68a", "player": "#512a13",
         "playerOutline": "#fdba74", "ranged": "#22d3ee", "melee": "#e879f9", "projectile": "#a3e635"
       }
+    }
+  ],
+  "realms": [
+    {
+      "name": "Jungle Realm",
+      "boss": "Canopy Colossus",
+      "colors": {"background":"#10251b","block":"#24402c","outline":"#78c850","hazard":"#f0b84b","finish":"#d4f17e","player":"#245040","playerOutline":"#b8f28b","ranged":"#9bd35b","melee":"#e98b45","projectile":"#f7d44a"},
+      "course": ["platform", "melee", "gap", "spikepit", "ranged", "stairs", "spikes", "flat"]
     },
     {
-      "name": "Level 11 - Rose Rift",
-      "pieces": ["start", "ranged", "spikepit", "melee", "gap", "stairs", "ranged", "spikes", "melee", "platform", "ranged", "melee", "ranged", "melee", "ranged", "melee", "finish"],
-      "colors": {
-        "background": "#291421", "block": "#442037", "outline": "#f472b6",
-        "hazard": "#fbbf24", "finish": "#67e8f9", "player": "#542343",
-        "playerOutline": "#fbcfe8", "ranged": "#60a5fa", "melee": "#fb7185", "projectile": "#bef264"
-      }
+      "name": "Mountain Realm",
+      "boss": "Peakbreaker",
+      "colors": {"background":"#19252b","block":"#34444a","outline":"#a9d4d8","hazard":"#f08e66","finish":"#f4e8ad","player":"#36576a","playerOutline":"#d7f5f3","ranged":"#91c9ed","melee":"#db876e","projectile":"#ffcb72"},
+      "course": ["stairs", "gap", "ranged", "platform", "spikes", "melee", "spikepit", "flat"]
     },
     {
-      "name": "Level 12 - Prism Gauntlet",
-      "pieces": ["start", "gap", "ranged", "spikes", "melee", "spikepit", "ranged", "stairs", "melee", "gap", "ranged", "spikes", "melee", "ranged", "melee", "ranged", "melee", "ranged", "finish"],
-      "colors": {
-        "background": "#13172a", "block": "#252d4c", "outline": "#818cf8",
-        "hazard": "#f97316", "finish": "#86efac", "player": "#34325a",
-        "playerOutline": "#e0e7ff", "ranged": "#2dd4bf", "melee": "#fb7185", "projectile": "#facc15"
-      }
+      "name": "Desert Realm",
+      "boss": "Dune Devourer",
+      "colors": {"background":"#302315","block":"#624526","outline":"#e6b64f","hazard":"#ed6545","finish":"#fff0a6","player":"#73502b","playerOutline":"#ffe29a","ranged":"#76c6c4","melee":"#e7794e","projectile":"#ffd04e"},
+      "course": ["flat", "spikes", "gap", "melee", "stairs", "spikepit", "ranged", "platform"]
+    },
+    {
+      "name": "Ocean Realm",
+      "boss": "Abyssal Titan",
+      "colors": {"background":"#102b38","block":"#18516a","outline":"#48c9c2","hazard":"#ff9a70","finish":"#a8f0df","player":"#17627a","playerOutline":"#a9f5ee","ranged":"#65c8ed","melee":"#ff9b75","projectile":"#ffe16b"},
+      "course": ["gap", "platform", "ranged", "spikes", "melee", "stairs", "spikepit", "flat"]
+    },
+    {
+      "name": "Volcano Realm",
+      "boss": "Cinderheart",
+      "colors": {"background":"#2b1714","block":"#49251c","outline":"#f15c38","hazard":"#ffab36","finish":"#fff08a","player":"#672c20","playerOutline":"#ffbd78","ranged":"#54d4d2","melee":"#fb7544","projectile":"#ffe14f"},
+      "course": ["spikepit", "melee", "stairs", "ranged", "gap", "spikes", "platform", "flat"]
     }
   ]
 }
