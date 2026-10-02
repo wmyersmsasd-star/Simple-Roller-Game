@@ -40,6 +40,7 @@ Enemies.loadFromLevel = function () {
         vy: 0,
         onGround: true,
         jumpCooldown: 0,
+        jumpReason: "",
         animationTime: 0,
         action: "idle",
         attackFrames: 0,
@@ -230,7 +231,9 @@ Enemies.tryJump = function (enemy, direction) {
   if (!enemy.onGround || enemy.jumpCooldown > 0) { return; }
 
   var halfSize = enemy.size / 2;
-  var aheadCol = Math.floor((enemy.x + direction * (halfSize + 6)) / CONFIG.TILE);
+  var movementSpeed = CONFIG.ENEMY_MOVE_SPEED * Enemies.speedMultiplier();
+  var lookAhead = halfSize + 6 + movementSpeed * 3;
+  var aheadCol = Math.floor((enemy.x + direction * lookAhead) / CONFIG.TILE);
   var bodyRow = Math.floor(enemy.y / CONFIG.TILE);
   var feetRow = Math.floor((enemy.y + halfSize + 1) / CONFIG.TILE);
   var obstacleAhead = Level.isSolid(aheadCol, bodyRow) || Level.isSolid(aheadCol, bodyRow - 1);
@@ -251,6 +254,7 @@ Enemies.tryJump = function (enemy, direction) {
     enemy.vy = -CONFIG.ENEMY_JUMP_POWER;
     enemy.onGround = false;
     enemy.jumpCooldown = CONFIG.ENEMY_JUMP_COOLDOWN;
+    enemy.jumpReason = gapAhead ? "gap" : hazardAhead ? "spike" : obstacleAhead ? "obstacle" : "projectile";
     enemy.action = "jump";
   }
 };
@@ -283,6 +287,7 @@ Enemies.updateEnemyVerticalMotion = function (enemy) {
       enemy.y = landingRow * CONFIG.TILE - halfSize;
       enemy.onGround = true;
       enemy.landFrames = 5;
+      enemy.jumpReason = "";
     }
     enemy.vy = 0;
   } else {
@@ -298,7 +303,9 @@ Enemies.updateEnemyVerticalMotion = function (enemy) {
 Enemies.moveHorizontally = function (enemy, direction) {
   if (direction === 0) { return; }
   enemy.dir = direction;
-  var nextX = enemy.x + direction * CONFIG.ENEMY_MOVE_SPEED * Enemies.speedMultiplier();
+  var movementSpeed = CONFIG.ENEMY_MOVE_SPEED * Enemies.speedMultiplier();
+  if (!enemy.onGround && enemy.jumpReason === "gap") { movementSpeed = movementSpeed * 1.6; }
+  var nextX = enemy.x + direction * movementSpeed;
   var enemySize = enemy.size || 24;
   var enemyLeft = nextX - enemySize / 2;
   var enemyTop = enemy.y - enemySize / 2;
