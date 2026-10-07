@@ -4,8 +4,8 @@
    ===================================================================== */
 
 body {
-  background: radial-gradient(circle at top, #26114a 0%, #100d1d 42%, #06070d 100%);
-  color: #edf6ff;
+  background: radial-gradient(circle at top, #303632 0%, #222629 42%, #191d20 100%);
+  color: #e2e7df;
   font-family: monospace;
   text-align: center;
   margin: 24px;
@@ -25,11 +25,11 @@ canvas {
   box-sizing: border-box;
   width: min(1200px, calc(100vw - 48px));
   height: auto;
-  border: 3px solid #ff4fd8;
-  background: #090d18;
+  border: 3px solid #84958a;
+  background: #242a2b;
   display: block;
   margin: 0 auto;
-  box-shadow: 0 0 20px rgba(255, 79, 216, 0.35);
+  box-shadow: 0 0 20px rgba(132, 149, 138, 0.22);
 }
 
 #home-screen {
@@ -58,8 +58,8 @@ body.home-active #home-screen {
   overflow: hidden;
   padding: 40px 8vw;
   background:
-    linear-gradient(105deg, rgba(5, 8, 15, 0.9) 0%, rgba(5, 8, 15, 0.66) 48%, rgba(5, 8, 15, 0.34) 100%),
-    repeating-linear-gradient(0deg, transparent 0 39px, rgba(141, 238, 255, 0.08) 40px);
+    linear-gradient(105deg, rgba(21, 26, 26, 0.9) 0%, rgba(21, 26, 26, 0.66) 48%, rgba(21, 26, 26, 0.34) 100%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(167, 186, 168, 0.06) 40px);
   text-align: left;
 }
 
@@ -67,45 +67,45 @@ body.home-active #home-screen {
   width: min(720px, 100%);
   margin-left: 2vw;
   padding-left: 28px;
-  border-left: 4px solid #ff4fd8;
+  border-left: 4px solid #9daa8d;
   animation: home-arrive 650ms ease-out both;
 }
 
 .home-kicker {
   margin: 0 0 18px;
-  color: #8deeff;
+  color: #b7c3a2;
   font-size: 13px;
   font-weight: bold;
 }
 
 .home-title {
   margin: 0 0 32px;
-  color: #f4f8ff;
+  color: #e8e9df;
   font-size: 80px;
   line-height: 0.95;
   text-align: left;
-  text-shadow: 7px 7px 0 rgba(255, 79, 216, 0.8);
+  text-shadow: 7px 7px 0 rgba(181, 151, 127, 0.45);
 }
 
 #start-button {
   min-width: 190px;
   min-height: 52px;
   padding: 12px 20px;
-  border: 2px solid #8deeff;
-  background: #12313a;
-  color: #f4f8ff;
+  border: 2px solid #a7b49b;
+  background: #3b4743;
+  color: #e2e7df;
   font: bold 16px monospace;
   cursor: pointer;
   transition: background-color 140ms ease, transform 140ms ease;
 }
 
 #start-button:hover:not(:disabled) {
-  background: #1d4a54;
+  background: #4a5851;
   transform: translateY(-2px);
 }
 
 #start-button:focus-visible {
-  outline: 3px solid #ff4fd8;
+  outline: 3px solid #c0967e;
   outline-offset: 4px;
 }
 
@@ -117,7 +117,7 @@ body.home-active #home-screen {
 #home-status {
   min-height: 18px;
   margin: 14px 0 0;
-  color: #c0d5e2;
+  color: #c1c9c0;
   font-size: 12px;
 }
 
@@ -126,7 +126,7 @@ body.home-active #home-screen {
   right: 32px;
   bottom: 22px;
   margin: 0;
-  color: #d7edf2;
+  color: #d0d6cc;
   font-size: 12px;
 }
 
@@ -190,14 +190,14 @@ body.home-active #home-screen {
   width: 150px;
   height: 8px;
   overflow: hidden;
-  border: 1px solid #8deeff;
-  background: #16202e;
+  border: 1px solid #9cae9b;
+  background: #303738;
 }
 
 #player-health-fill {
   width: 100%;
   height: 100%;
-  background: #58d68d;
+  background: #91aa8d;
   transition: width 120ms linear;
 }
 
@@ -205,16 +205,16 @@ body.home-active #home-screen {
 #coin-hud {
   font-size: 16px;
   font-weight: bold;
-  color: #eafcff;
+  color: #e4e9e1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 #damage-upgrade,
 #health-upgrade {
-  background: #1b2542;
-  border: 2px solid #7af0ff;
-  color: #eafcff;
+  background: #343d45;
+  border: 2px solid #aab79e;
+  color: #e3e9e1;
   padding: 8px 14px;
   font-family: monospace;
   font-weight: bold;
@@ -224,7 +224,7 @@ body.home-active #home-screen {
 
 #damage-upgrade:hover,
 #health-upgrade:hover {
-  background: #273968;
+  background: #404b51;
 }
 
 #shop-panel {
@@ -238,14 +238,14 @@ body.home-active #home-screen {
 #ability-status {
   min-height: 20px;
   margin-top: 6px;
-  color: #8deeff;
+  color: #aab7a1;
   font-size: 13px;
 }
 
 #block-status {
   min-height: 20px;
   margin-top: 2px;
-  color: #8deeff;
+  color: #aab7a1;
   font-size: 13px;
 }
 

@@ -153,7 +153,7 @@ Draw.player = function () {
   ctx.stroke();
 
   if (Player.isBlocking()) {
-    ctx.strokeStyle = "#8deeff";
+    ctx.strokeStyle = Level.colors.ranged;
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.arc(centerX, centerY, r + 5, 0, Math.PI * 2);

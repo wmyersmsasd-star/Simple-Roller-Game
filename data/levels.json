@@ -33,9 +33,9 @@
       "name": "Level 3 - Crimson Crossing",
       "pieces": ["start", "flat", "melee", "gap", "spikes", "ranged", "finish"],
       "colors": {
-        "background": "#21161b", "block": "#38222a", "outline": "#ff6b6b",
-        "hazard": "#ffb86b", "finish": "#ffe66d", "player": "#51263a",
-        "playerOutline": "#ffd6e0", "ranged": "#55d6ff", "melee": "#ff8a5b", "projectile": "#ffc857"
+        "background": "#262b2b", "block": "#343b3a", "outline": "#78867c",
+        "hazard": "#b88c73", "finish": "#c9b98e", "player": "#47524d",
+        "playerOutline": "#9bab93", "ranged": "#83aaa6", "melee": "#b98370", "projectile": "#b9a77a"
       }
     },
     {

@@ -87,16 +87,16 @@ Level.build = function (levelNumber) {
   Level.difficultyMultiplier = level.difficultyMultiplier || 1;
   Level.bossName = level.bossName || "";
   Level.colors = level.colors || {
-    background: "#090d18",
-    block: "#0b1220",
-    outline: "#ff4fd8",
-    hazard: "#ff5a36",
-    finish: "#4ae6ff",
-    player: "#24163d",
-    playerOutline: "#7af0ff",
-    ranged: "#64d7ff",
-    melee: "#ff7b54",
-    projectile: "#ff7a59"
+    background: "#242a2b",
+    block: "#313839",
+    outline: "#829386",
+    hazard: "#ba8d73",
+    finish: "#cbb98a",
+    player: "#454d49",
+    playerOutline: "#aab8a2",
+    ranged: "#86aaa8",
+    melee: "#bb8873",
+    projectile: "#bca778"
   };
   Level.grid = [];
   Level.cols = level.pieces.length * CONFIG.PIECE_COLS;

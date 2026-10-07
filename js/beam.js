@@ -168,13 +168,14 @@ SkyBeam.draw = function () {
   if (SkyBeam.beam) {
     var alpha = SkyBeam.beam.lifeMs / SkyBeam.beam.maxLifeMs;
     ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.shadowColor = "#8deeff";
+    ctx.globalAlpha = alpha * 0.55;
+    ctx.shadowColor = Level.colors.ranged;
     ctx.shadowBlur = 24;
-    ctx.fillStyle = "rgba(115, 232, 255, 0.55)";
+    ctx.fillStyle = Level.colors.ranged;
     ctx.fillRect(SkyBeam.beam.left, 0, SkyBeam.beam.width, CONFIG.CANVAS_H);
     ctx.shadowBlur = 0;
-    ctx.fillStyle = "#efffff";
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = Level.colors.finish;
     ctx.fillRect(SkyBeam.beam.left + SkyBeam.beam.width / 2 - 5, 0, 10, CONFIG.CANVAS_H);
     ctx.restore();
   }
