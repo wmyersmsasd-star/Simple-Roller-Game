@@ -4,6 +4,9 @@ var SkyBeam = {
   cooldownMs: 0,
   aimX: 0,
   beam: null,
+  hazardWarning: null,
+  hazardCooldownMs: 0,
+  hazardBeam: null,
   beamKeyWasDown: false,
   lastUpdateTime: 0
 };
@@ -20,6 +23,9 @@ SkyBeam.reset = function () {
   SkyBeam.cooldownMs = 0;
   SkyBeam.aimX = Player.x + CONFIG.PLAYER_SIZE / 2;
   SkyBeam.beam = null;
+  SkyBeam.hazardWarning = null;
+  SkyBeam.hazardCooldownMs = 0;
+  SkyBeam.hazardBeam = null;
   SkyBeam.beamKeyWasDown = Input.beam;
   SkyBeam.lastUpdateTime = SkyBeam.now();
   SkyBeam.updateStatus();
@@ -72,6 +78,46 @@ SkyBeam.update = function () {
   if (SkyBeam.beam) {
     SkyBeam.beam.lifeMs = SkyBeam.beam.lifeMs - deltaMs;
     if (SkyBeam.beam.lifeMs <= 0) { SkyBeam.beam = null; }
+  }
+
+  if (SkyBeam.hazardBeam) {
+    SkyBeam.hazardBeam.lifeMs = SkyBeam.hazardBeam.lifeMs - deltaMs;
+    if (SkyBeam.hazardBeam.lifeMs <= 0) { SkyBeam.hazardBeam = null; }
+  }
+
+  if (Game.levelNumber >= 2) {
+    if (SkyBeam.hazardWarning) {
+      SkyBeam.hazardWarning.lifeMs = SkyBeam.hazardWarning.lifeMs - deltaMs;
+      if (SkyBeam.hazardWarning.lifeMs <= 0) {
+        var hazardWidth = CONFIG.BEAM_WIDTH_BLOCKS * CONFIG.TILE;
+        var hazardLeft = SkyBeam.hazardWarning.x - hazardWidth / 2;
+        SkyBeam.hazardBeam = {
+          left: hazardLeft,
+          width: hazardWidth,
+          lifeMs: CONFIG.HAZARD_BEAM_EFFECT_MS,
+          maxLifeMs: CONFIG.HAZARD_BEAM_EFFECT_MS
+        };
+        if (Player.x + CONFIG.PLAYER_SIZE > hazardLeft &&
+            Player.x < hazardLeft + hazardWidth) {
+          Player.takeDamage(CONFIG.HAZARD_BEAM_DAMAGE, null);
+        }
+        SkyBeam.hazardWarning = null;
+      }
+    }
+
+    SkyBeam.hazardCooldownMs = Math.max(0, SkyBeam.hazardCooldownMs - deltaMs);
+    if (!SkyBeam.hazardWarning && SkyBeam.hazardCooldownMs <= 0) {
+      SkyBeam.hazardWarning = {
+        x: Player.x + CONFIG.PLAYER_SIZE / 2,
+        lifeMs: CONFIG.HAZARD_BEAM_WARNING_MS,
+        maxLifeMs: CONFIG.HAZARD_BEAM_WARNING_MS
+      };
+      SkyBeam.hazardCooldownMs = CONFIG.HAZARD_BEAM_INTERVAL_MS;
+    }
+  } else {
+    SkyBeam.hazardWarning = null;
+    SkyBeam.hazardCooldownMs = 0;
+    SkyBeam.hazardBeam = null;
   }
 
   var justPressed = Input.beam && !SkyBeam.beamKeyWasDown;
@@ -130,6 +176,37 @@ SkyBeam.draw = function () {
     ctx.shadowBlur = 0;
     ctx.fillStyle = "#efffff";
     ctx.fillRect(SkyBeam.beam.left + SkyBeam.beam.width / 2 - 5, 0, 10, CONFIG.CANVAS_H);
+    ctx.restore();
+  }
+
+  if (SkyBeam.hazardWarning && Math.floor(SkyBeam.now() / 150) % 2 === 0) {
+    var hazardWarningWidth = CONFIG.BEAM_WIDTH_BLOCKS * CONFIG.TILE;
+    ctx.save();
+    ctx.globalAlpha = 0.45;
+    ctx.fillStyle = Level.colors.hazard;
+    ctx.fillRect(SkyBeam.hazardWarning.x - hazardWarningWidth / 2, 0,
+      hazardWarningWidth, CONFIG.CANVAS_H);
+    ctx.globalAlpha = 0.95;
+    ctx.strokeStyle = Level.colors.hazard;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([8, 8]);
+    ctx.strokeRect(SkyBeam.hazardWarning.x - hazardWarningWidth / 2 + 1, 1,
+      hazardWarningWidth - 2, CONFIG.CANVAS_H - 2);
+    ctx.restore();
+  }
+
+  if (SkyBeam.hazardBeam) {
+    var hazardAlpha = SkyBeam.hazardBeam.lifeMs / SkyBeam.hazardBeam.maxLifeMs;
+    ctx.save();
+    ctx.globalAlpha = hazardAlpha;
+    ctx.shadowColor = Level.colors.hazard;
+    ctx.shadowBlur = 24;
+    ctx.fillStyle = Level.colors.hazard;
+    ctx.fillRect(SkyBeam.hazardBeam.left, 0, SkyBeam.hazardBeam.width, CONFIG.CANVAS_H);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = Level.colors.finish;
+    ctx.fillRect(SkyBeam.hazardBeam.left + SkyBeam.hazardBeam.width / 2 - 5,
+      0, 10, CONFIG.CANVAS_H);
     ctx.restore();
   }
 };
